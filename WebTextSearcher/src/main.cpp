@@ -3,9 +3,12 @@
 #include <QQmlApplicationEngine>
 #include <QVector>
 
+#include <QtConcurrent>
 
 int main(int argc, char *argv[])
 {
+    //QtConcurrent::mappedReduced()
+
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
