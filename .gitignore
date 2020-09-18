@@ -1,14 +1,4 @@
 # C++ objects and libs
-*.slo
-*.lo
-*.o
-*.a
-*.la
-*.lai
-*.so
-*.so.*
-*.dll
-*.dylib
 
 # Qt-es
 object_script.*.Release
@@ -28,7 +18,9 @@ ui_*.h
 *.qmlc
 *.jsc
 Makefile*
-*build-*
+*build-* 
+*build_*
+!build
 *.qm
 *.prl
 
@@ -50,3 +42,5 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+*_qmlcache.qrc
