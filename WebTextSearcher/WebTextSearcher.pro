@@ -19,9 +19,18 @@ RESOURCES += qml.qrc
 INCLUDEPATH += src/
 
 HEADERS += \
+    src/Dal/textsearcher.h \
+    src/Net/downloader.h \
+    src/Net/networkerror.h \
+    src/Net/idownloader.h
 
 SOURCES += \
-	src/main.cpp
+	src/main.cpp \
+	src/Utils/ThreadSafeQueue.hpp \
+    src/Dal/textsearcher.cpp \
+    src/Net/networkerror.cpp \
+    src/Net/downloader.cpp \
+    src/Net/idownloader.cpp
 
 release:DESTDIR = release
 release:OBJECTS_DIR = release/obj

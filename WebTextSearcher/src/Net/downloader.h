@@ -1,0 +1,45 @@
+#ifndef DOWNLOADER_H
+#define DOWNLOADER_H
+
+#include "Net/idownloader.h"
+
+#include <QNetworkAccessManager>
+#include <QEventLoop>
+#include <QTimer>
+
+
+namespace Net {
+
+
+class Downloader : public IDownloader {
+    using milliseconds = std::chrono::milliseconds;
+    using seconds = std::chrono::seconds;
+
+public:
+    explicit Downloader();
+
+    Downloader(const Downloader &) = delete;
+
+    ~Downloader() override;
+
+    // IDownloader interface
+public:
+    QByteArray get(const QNetworkRequest &request) override;
+
+    std::chrono::milliseconds getTimeout() const override;
+
+    void setTimeout(const std::chrono::milliseconds timeout) override;
+
+private:
+    static constexpr int defaultTimeout = 30000;
+
+    QNetworkAccessManager networkManager_;
+    QEventLoop looper_;
+    QTimer deadlineTimer_;
+};
+
+
+} // namespace Net
+
+
+#endif // DOWNLOADER_H

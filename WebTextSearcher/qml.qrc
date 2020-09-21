@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>src/Qml/main.qml</file>
+        <file>src/Utils/ThreadSafeQueue.hpp</file>
+        <file>src/Utils/Utils.hpp</file>
     </qresource>
 </RCC>
