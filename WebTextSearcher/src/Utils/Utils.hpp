@@ -5,13 +5,11 @@
 #ifndef WEBTEXTSEARCHER_UTILS_H
 #define WEBTEXTSEARCHER_UTILS_H
 
-
 #include "ThreadSafeQueue.hpp"
 
 #include <QDebug>
 #include <QDateTime>
 #include <memory>
-
 
 
 #define DEBUG(msg_) qDebug() << Utils::DebugPrinter(__FILE__, __LINE__) << msg_ << "<";
@@ -49,8 +47,6 @@ struct QObjectDeleteLater {
             delete o;
         }
     }
-
-
 };
 
 template<typename T>

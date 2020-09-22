@@ -13,7 +13,9 @@
 
 void slotResult(TextSearcherResult res)
 {
-    DEBUG(res.url << ": " << res.status << res.error);
+    static std::atomic<int> r = 0;
+    r++;
+    DEBUG(res.url << ": " << res.status << res.error << r);
 }
 
 int main(int argc, char *argv[])
@@ -35,21 +37,20 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    QTimer::singleShot(0, &app, [&app] {
-        size_t maxUrlNumber = 5;
+    Utils::SafeUrlQueue queue;
+    std::thread { [&] {
+        size_t maxUrlNumber = 1000;
         size_t scannedUrlNumber = 0;
-        Utils::SafeUrlQueue queue;
         QThreadPool workers;
-        workers.setMaxThreadCount(4);
-        DEBUG("MAIN" << QThread::currentThreadId());
+        workers.setMaxThreadCount(100);
+        //DEBUG("MAIN" << QThread::currentThreadId());
 
-        queue.push("http://habr.com/");
+        queue.push("http://www.google.com/search?q=qthread");
         QString url;
         while (scannedUrlNumber < maxUrlNumber) {
 
             if (! queue.tryPop(url)) {
                 if (workers.activeThreadCount() == 0) {
-                    DEBUG("Fetched only" << scannedUrlNumber)
                     break; // means no more urls to fetch
                 } else {
                     continue; // means queue is empty and we should wait for felling
@@ -57,12 +58,13 @@ int main(int argc, char *argv[])
             }
 
             auto sercher = new TextSearcher(queue, std::move(url));
-            app.connect(sercher, &TextSearcher::sigResult, &app, slotResult, Qt::QueuedConnection);
+            app.connect(sercher, &TextSearcher::sigResult, &app, &::slotResult, Qt::QueuedConnection);
             workers.start(sercher);
 
             scannedUrlNumber++;
         }
-    });
+        workers.waitForDone();
+    } }.detach();
 
     return app.exec();
 }

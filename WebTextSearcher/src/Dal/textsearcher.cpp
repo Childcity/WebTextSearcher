@@ -17,12 +17,13 @@ void TextSearcher::run()
     TextSearcherResult result;
     Net::Downloader downloader;
 
-    downloader.setTimeout(5s);
+    downloader.setTimeout(3s);
 
     QNetworkRequest request(urlToFetch_);
     request.setMaximumRedirectsAllowed(5);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::UserVerifiedRedirectPolicy);
+    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     request.setHeader(QNetworkRequest::UserAgentHeader, GetDefaultUserAgent());
 
     try {

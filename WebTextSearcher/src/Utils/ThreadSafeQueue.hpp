@@ -25,7 +25,7 @@ private:
 
 private:
     std::unique_ptr<Node> head_ {};
-    mutable std::mutex headmutex_ {};
+    mutable std::mutex headMutex_ {};
 
     Node *tail_ {};
     mutable std::mutex tailmutex_ {};
@@ -90,7 +90,7 @@ public:
 
     bool empty() const
     {
-        std::lock_guard<std::mutex> lk(headmutex_);
+        std::lock_guard<std::mutex> lk(headMutex_);
         return head_.get() == getTail();
     }
 
@@ -101,7 +101,7 @@ public:
         size_t size = 0;
         Node *nodePtr = nullptr;
 
-        std::lock_guard<std::mutex> headLock(headmutex_);
+        std::lock_guard<std::mutex> headLock(headMutex_);
         std::lock_guard<std::mutex> tailLock(tailmutex_);
         {
             nodePtr = head_.get();
@@ -130,7 +130,7 @@ private:
 
     std::unique_lock<std::mutex> waitForData()
     {
-        std::unique_lock<std::mutex> headLock(headmutex_);
+        std::unique_lock<std::mutex> headLock(headMutex_);
         dataCond_.wait(headLock, [&] { return head_.get() != getTail(); });
         return headLock;
     }
@@ -150,7 +150,7 @@ private:
 
     std::unique_ptr<Node> tryPopHead()
     {
-        std::lock_guard<std::mutex> headLock(headmutex_);
+        std::lock_guard<std::mutex> headLock(headMutex_);
 
         if (head_.get() == getTail()) {
             return {};
@@ -161,7 +161,7 @@ private:
 
     std::unique_ptr<Node> tryPopHead(T &value)
     {
-        std::lock_guard<std::mutex> headLock(headmutex_);
+        std::lock_guard<std::mutex> headLock(headMutex_);
 
         if (head_.get() == getTail()) {
             return {};

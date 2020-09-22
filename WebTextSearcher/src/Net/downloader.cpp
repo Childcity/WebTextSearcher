@@ -23,9 +23,7 @@ Downloader::~Downloader()
 
 QByteArray Downloader::get(const QNetworkRequest &request)
 {
-    using namespace Utils;
-
-    DEBUG("Reaching url: " << request.url() << "Timeout:" << getTimeout().count());
+    //DEBUG("Reaching url: " << request.url() << "Timeout:" << getTimeout().count());
 
     const std::unique_ptr<QNetworkReply> reply(networkManager_.get(request));
     QObject::connect(&*reply, &QNetworkReply::redirected, &*reply, &QNetworkReply::redirectAllowed);
