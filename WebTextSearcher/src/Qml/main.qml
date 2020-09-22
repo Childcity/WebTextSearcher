@@ -9,8 +9,10 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
+    minimumWidth: gridLayout.implicitWidth + 2*defMargin
 
     property int defMargin: 5
+    property int firstColWidth: 130
 
     header: ToolBar {
         RowLayout {
@@ -24,63 +26,14 @@ ApplicationWindow {
         }
     }
 
-//    ColumnLayout {
-//        anchors.fill: parent
-//        anchors.margins: defMargin
-//        spacing: defMargin
-//        //Rectangle {
-//        //    Layout.alignment: Qt.AlignCenter
-//        //    border.color: "black"
-//        //    border.width: 2
-
-//            RowLayout {
-//                //Layout.alignment: Qt.AlignTop
-//                Layout.fillWidth: true
-//                Label{
-//                    text: "sasas"
-//                }
-//                Label{
-//                    text: "sasas"
-//                }
-//            }
-//            RowLayout {
-//                //Layout.alignment: Qt.AlignTop
-//                Layout.fillWidth: true
-//                Label{
-//                    text: "sasas"
-//                }
-//                Label{
-//                    text: "sasas"
-//                }
-//            }
-
-
-//            Rectangle {
-//                id: space
-//                Layout.fillHeight: true
-//                Layout.fillWidth: true
-//                border.width: 1
-//                border.color: 'red'
-//                color: 'transparent'
-//                Text {
-//                    text: qsTr("space")
-//                    anchors.horizontalCenter: parent.horizontalCenter
-//                    anchors.verticalCenter: parent.verticalCenter
-//                    verticalAlignment: Text.AlignVCenter
-//                    horizontalAlignment: Text.AlignHCenter
-//                }
-//            }
-//    }
-
-    property int firstColWidth: 130
-
     GridLayout {
         id: gridLayout
+        enabled: true
         anchors.fill: parent
         anchors.margins: defMargin
-        enabled: true
         columnSpacing: defMargin
         rowSpacing: defMargin
+
         rows: 5
         columns: 4
 
@@ -123,6 +76,7 @@ ApplicationWindow {
 
         SpinBox {
             id: maxThreadsNum
+            editable: true
             Layout.row: 3
             Layout.column: 2
             value: 100
@@ -138,6 +92,7 @@ ApplicationWindow {
 
         SpinBox {
             id: maxUrlsNum
+            editable: true
             Layout.row: 4
             Layout.column: 2
             value: 500
@@ -145,22 +100,24 @@ ApplicationWindow {
             to: 100000
         }
 
-
-        Label {
-            Layout.row: 4
-            Layout.column: 3
-            Layout.alignment: Qt.AlignRight
-            text: "Timeout:"
-        }
-
-        SpinBox {
-            id: maxUrlTimeout
+        Row {
             Layout.row: 4
             Layout.column: 4
-            Layout.alignment: Qt.AlignLeft
-            value: 500
-            from: 1
-            to: 100000
+            Layout.alignment: Qt.AlignRight
+
+            Label {
+                height: parent.height
+                text: "Timeout:"
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            SpinBox {
+                id: maxUrlTimeout
+                editable: true
+                value: 500
+                from: 1
+                to: 100000
+            }
         }
 
         Rectangle {
