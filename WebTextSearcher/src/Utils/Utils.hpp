@@ -19,7 +19,7 @@
 namespace Utils {
 
 
-using SafeUrlQueue = childcity::threadsafeqeue::ThreadSafeQueue<QString>;
+using SafeUrlQueue = childcity::threadsafeqeue::ThreadSafeQueue<std::string>;
 
 struct DebugPrinter {
     const char *file;
