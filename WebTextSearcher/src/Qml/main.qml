@@ -12,7 +12,7 @@ ApplicationWindow {
     minimumWidth: gridLayout.implicitWidth + 2*defMargin
 
     property int defMargin: 5
-    property int firstColWidth: 130
+    property int controlHeight: 30
 
     header: ToolBar {
         RowLayout {
@@ -26,117 +26,165 @@ ApplicationWindow {
         }
     }
 
-    GridLayout {
-        id: gridLayout
-        enabled: true
+    ColumnLayout{
         anchors.fill: parent
         anchors.margins: defMargin
-        columnSpacing: defMargin
-        rowSpacing: defMargin
 
-        rows: 5
-        columns: 4
-
-        Label {
-            Layout.preferredWidth: firstColWidth
-            Layout.row: 1
-            Layout.column: 1
-            text: "Start Url:"
-        }
-
-        TextField {
-            id: startUrl
-            Layout.row: 1
-            Layout.column: 2
-            Layout.columnSpan: 3
+        GridLayout {
+            id: gridLayout
             Layout.fillWidth: true
-            placeholderText: qsTr("http://www.google.com/search?q=qthread")
-        }
+            enabled: true
+            columnSpacing: defMargin
+            rowSpacing: defMargin
 
-        Label {
-            Layout.row: 2
-            Layout.column: 1
-            text: "Text to serch:"
-        }
-
-        TextField {
-            id: searchedText
-            Layout.row: 2
-            Layout.column: 2
-            Layout.columnSpan: 3
-            Layout.fillWidth: true
-            placeholderText: qsTr("qthread")
-        }
-
-        Label {
-            Layout.row: 3
-            Layout.column: 1
-            text: "Max threads:"
-        }
-
-        SpinBox {
-            id: maxThreadsNum
-            editable: true
-            Layout.row: 3
-            Layout.column: 2
-            value: 100
-            from: 1
-            to: 1000
-        }
-
-        Label {
-            Layout.row: 4
-            Layout.column: 1
-            text: "Max urls:"
-        }
-
-        SpinBox {
-            id: maxUrlsNum
-            editable: true
-            Layout.row: 4
-            Layout.column: 2
-            value: 500
-            from: 1
-            to: 100000
-        }
-
-        Row {
-            Layout.row: 4
-            Layout.column: 4
-            Layout.alignment: Qt.AlignRight
+            rows: 5
+            columns: 4
 
             Label {
-                height: parent.height
-                text: "Timeout:"
-                verticalAlignment: Text.AlignVCenter
+                Layout.row: 1
+                Layout.column: 1
+                text: "Start Url:"
+            }
+
+            TextField {
+                id: startUrl
+                Layout.row: 1
+                Layout.column: 2
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
+                Layout.preferredHeight: controlHeight
+                placeholderText: qsTr("http://www.google.com/search?q=qthread")
+            }
+
+            Label {
+                Layout.row: 2
+                Layout.column: 1
+                text: "Text to serch:"
+            }
+
+            TextField {
+                id: searchedText
+                Layout.row: 2
+                Layout.column: 2
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
+                Layout.preferredHeight: controlHeight
+                placeholderText: qsTr("qthread")
+            }
+
+            Label {
+                Layout.row: 3
+                Layout.column: 1
+                text: "Max threads:"
             }
 
             SpinBox {
-                id: maxUrlTimeout
+                id: maxThreadsNum
+                Layout.preferredHeight: controlHeight
+                Layout.row: 3
+                Layout.column: 2
+                editable: true
+                value: 100
+                from: 1
+                to: 1000
+            }
+
+            Label {
+                Layout.row: 4
+                Layout.column: 1
+                text: "Max urls:"
+            }
+
+            SpinBox {
+                id: maxUrlsNum
+                Layout.preferredHeight: controlHeight
+                Layout.row: 4
+                Layout.column: 2
                 editable: true
                 value: 500
                 from: 1
                 to: 100000
             }
+
+            Row {
+                Layout.row: 4
+                Layout.column: 4
+                Layout.alignment: Qt.AlignRight
+
+                Label {
+                    height: parent.height
+                    text: "Timeout:"
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                SpinBox {
+                    id: maxUrlTimeout
+                    height: controlHeight
+                    editable: true
+                    value: 500
+                    from: 1
+                    to: 100000
+                }
+            }
         }
 
         Rectangle {
-            id: space
-            Layout.row: gridLayout.rows
-            Layout.column: 1
-            Layout.columnSpan: gridLayout.columns
-            Layout.fillHeight: true
             Layout.fillWidth: true
-            border.width: 1
-            border.color: 'red'
-            color: 'transparent'
-            Text {
-                text: qsTr("space")
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.verticalCenter: parent.verticalCenter
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
+            Layout.fillHeight: true
+            border { width: 3; color: 'gray' }
+            color: 'lightgray'
+            radius: defMargin
+
+            ListView {
+                anchors.fill: parent
+                anchors.margins: 2*defMargin
+                spacing: defMargin
+                model: 10
+
+                delegate: Rectangle {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: scannedUrlsRl.implicitHeight + defMargin
+                    border { width: 2; color: 'red' }
+                    color: 'transparent'
+
+                    RowLayout {
+                        id: scannedUrlsRl
+                        anchors.fill: parent
+
+                        TextEdit {
+                            text: qsTr("http://www.google.com/search?q=qthread")
+                            Layout.maximumWidth: scannedUrlsRl.width/2
+                            Layout.minimumWidth: scannedUrlsRl.width/2
+                            clip: true
+                            wrapMode: TextEdit.NoWrap
+                            Layout.alignment: Qt.AlignLeft
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignLeft
+                        }
+
+                        Text {
+                            text: qsTr("Status: Loading....")
+                            Layout.minimumWidth: scannedUrlsRl.width/2
+                            //anchors.horizontalCenter: parent.horizontalCenter
+                            //anchors.verticalCenter: parent.verticalCenter
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignLeft
+                        }
+                    }
+                }
+
+                ScrollBar.vertical: ScrollBar {
+                    id: scrollBar
+                    policy: ScrollBar.AsNeeded
+                    contentItem: Rectangle {
+                        color: scrollBar.pressed ? Qt.lighter("#7b7f7b") : "#7b7f7b"
+                        implicitWidth: 10
+                        radius: width / 2
+                    }
+                }
             }
         }
+
     }
 }
