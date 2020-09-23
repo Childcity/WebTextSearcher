@@ -15,6 +15,21 @@ ApplicationWindow {
     property int controlHeight: 30
 
     header: ToolBar {
+        leftPadding: defMargin
+        bottomPadding: defMargin
+
+        background: Rectangle {
+            color: "#eeeeee"
+
+            Rectangle {
+                anchors.bottom: parent.bottom
+                width: parent.width
+                radius: defMargin
+                height: 3
+                color: "gray"
+            }
+        }
+
         RowLayout {
             anchors.left: root.left
             ToolButton {
@@ -26,7 +41,7 @@ ApplicationWindow {
         }
     }
 
-    ColumnLayout{
+    ColumnLayout {
         anchors.fill: parent
         anchors.margins: defMargin
 
@@ -129,6 +144,7 @@ ApplicationWindow {
         }
 
         Rectangle {
+            id: backgroundForUrls
             Layout.fillWidth: true
             Layout.fillHeight: true
             border { width: 3; color: 'gray' }
@@ -136,47 +152,68 @@ ApplicationWindow {
             radius: defMargin
 
             ListView {
+                id: scannedUrlsLv
                 anchors.fill: parent
                 anchors.margins: 2*defMargin
-                spacing: defMargin
+                //spacing: 1
                 model: 10
+                clip: true
 
                 delegate: Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: scannedUrlsRl.implicitHeight + defMargin
-                    border { width: 2; color: 'red' }
+                    height: scannedUrlsRl.implicitHeight
+                    //border { width: 2; color: 'red' }
                     color: 'transparent'
 
                     RowLayout {
                         id: scannedUrlsRl
                         anchors.fill: parent
+                        clip: true
 
-                        TextEdit {
+                        TextField {
+                            id: linkTxt
                             text: qsTr("http://www.google.com/search?q=qthread")
-                            Layout.maximumWidth: scannedUrlsRl.width/2
-                            Layout.minimumWidth: scannedUrlsRl.width/2
-                            clip: true
-                            wrapMode: TextEdit.NoWrap
-                            Layout.alignment: Qt.AlignLeft
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignLeft
+                            Layout.maximumWidth: scannedUrlsRl.width - statusUrlLoadingTxt.width
+                            //Layout.minimumWidth: scannedUrlsRl.width/2
+                            horizontalAlignment: TextInput.AlignLeft
+
+                            background: Rectangle {
+                                color: backgroundForUrls.color
+                                radius: defMargin
+                                border.color: linkTxt.focus ? 'gray' : "transparent"
+                            }
+
+                            palette { text: "blue" }
+
+                            font {
+                                italic: true
+                                pointSize: 8
+                            }
+
+                            Component.onCompleted: linkTxt.cursorPosition = 0
                         }
 
                         Text {
+                            id: statusUrlLoadingTxt
                             text: qsTr("Status: Loading....")
-                            Layout.minimumWidth: scannedUrlsRl.width/2
-                            //anchors.horizontalCenter: parent.horizontalCenter
-                            //anchors.verticalCenter: parent.verticalCenter
+                            Layout.maximumWidth: 150
+                            Layout.minimumWidth: 150
+                            Layout.alignment: Qt.AlignRight
                             verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignLeft
+                            horizontalAlignment: Text.AlignRight
+
+                            font {
+                                pointSize: 8
+                            }
                         }
                     }
                 }
 
                 ScrollBar.vertical: ScrollBar {
                     id: scrollBar
-                    policy: ScrollBar.AsNeeded
+                    policy: scannedUrlsLv.contentHeight > scannedUrlsLv.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    minimumSize: 0.05
                     contentItem: Rectangle {
                         color: scrollBar.pressed ? Qt.lighter("#7b7f7b") : "#7b7f7b"
                         implicitWidth: 10
@@ -185,6 +222,5 @@ ApplicationWindow {
                 }
             }
         }
-
     }
 }
