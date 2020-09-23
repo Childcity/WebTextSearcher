@@ -10,11 +10,16 @@ ApplicationWindow {
     width: 640
     height: 480
     minimumWidth: gridLayout.implicitWidth + 2*defMargin
+    minimumHeight: toolBar.implicitHeight
+                   + gridLayout.implicitHeight
+                   + backgroundForUrls.implicitHeight
+                   + 2*defMargin
 
     property int defMargin: 5
     property int controlHeight: 30
 
     header: ToolBar {
+        id: toolBar
         leftPadding: defMargin
         bottomPadding: defMargin
 
@@ -163,13 +168,13 @@ ApplicationWindow {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     height: scannedUrlsRl.implicitHeight
+                    anchors.rightMargin: scrollBar.visible ? scrollBar.width + defMargin : 0
                     //border { width: 2; color: 'red' }
                     color: 'transparent'
 
                     RowLayout {
                         id: scannedUrlsRl
                         anchors.fill: parent
-                        clip: true
 
                         TextField {
                             id: linkTxt

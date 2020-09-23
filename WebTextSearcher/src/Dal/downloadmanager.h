@@ -12,7 +12,9 @@ class ParallelSearcher : public QObject, public QRunnable {
     Q_OBJECT
 
 public:
-    explicit ParallelSearcher() {}
+    explicit ParallelSearcher(QObject *parent = nullptr)
+        : QObject(parent)
+    {}
 
     ~ParallelSearcher() override
     {
@@ -59,6 +61,7 @@ signals:
 
 class DownloadManager : public QObject {
     Q_OBJECT
+
 public:
     explicit DownloadManager(QObject *parent = nullptr)
         : QObject(parent)
