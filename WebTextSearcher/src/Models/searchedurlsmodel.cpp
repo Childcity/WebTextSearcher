@@ -1,0 +1,2 @@
+#include "searchedurlsmodel.h"
+

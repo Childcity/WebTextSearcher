@@ -5,10 +5,10 @@
 
 
 struct TextSearcherResult {
-public:
-    explicit TextSearcherResult() noexcept = default;
-
-public:
+//public:
+//    explicit TextSearcherResult() noexcept = default;
+//
+//public:
     QString url;
     TextSearcherStatus::Value status;
     QString error;

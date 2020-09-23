@@ -1,3 +1,4 @@
+#include "Models/searchedurlsmodel.h"
 #include "Dal/downloadmanager.h"
 
 #include <QFont>
@@ -17,6 +18,9 @@ int main(int argc, char *argv[])
 
     {
         // register qml types
+        qmlRegisterType<Models::SerchedUrlsModel>("SerchedUrlsModel", 1, 0, "SerchedUrlsModel");
+        qmlRegisterUncreatableType<TextSearcherStatus>("TextSearcherStatus", 1, 0, "TextSearcherStatus", "TextSearcherStatus is an Enum and can't b instantiated!");
+        qRegisterMetaType<TextSearcherStatus::Value>("TextSearcherStatus::Value");
     }
 
     QQmlApplicationEngine engine;

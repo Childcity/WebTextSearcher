@@ -2,9 +2,11 @@ import QtQuick 2.11
 import QtQuick.Window 2.11
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import SerchedUrlsModel 1.0
+import TextSearcherStatus 1.0
 
 ApplicationWindow {
-    title: qsTr("Web Text Searcher")
+    title: qsTr('Web Text Searcher')
     id: root
     visible: true
     width: 640
@@ -24,24 +26,24 @@ ApplicationWindow {
         bottomPadding: defMargin
 
         background: Rectangle {
-            color: "#eeeeee"
+            color: '#eeeeee'
 
             Rectangle {
                 anchors.bottom: parent.bottom
                 width: parent.width
                 radius: defMargin
                 height: 3
-                color: "gray"
+                color: 'gray'
             }
         }
 
         RowLayout {
             anchors.left: root.left
             ToolButton {
-                text: qsTr("Start")
+                text: qsTr('Start')
             }
             ToolButton {
-                text: qsTr("Stop")
+                text: qsTr('Stop')
             }
         }
     }
@@ -63,7 +65,7 @@ ApplicationWindow {
             Label {
                 Layout.row: 1
                 Layout.column: 1
-                text: "Start Url:"
+                text: qsTr('Start Url:')
             }
 
             TextField {
@@ -73,13 +75,13 @@ ApplicationWindow {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: controlHeight
-                placeholderText: qsTr("http://www.google.com/search?q=qthread")
+                placeholderText: qsTr('http://www.google.com/search?q=qthread')
             }
 
             Label {
                 Layout.row: 2
                 Layout.column: 1
-                text: "Text to serch:"
+                text: qsTr('Text to serch:')
             }
 
             TextField {
@@ -89,13 +91,13 @@ ApplicationWindow {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: controlHeight
-                placeholderText: qsTr("qthread")
+                placeholderText: qsTr('qthread')
             }
 
             Label {
                 Layout.row: 3
                 Layout.column: 1
-                text: "Max threads:"
+                text: qsTr('Max threads:')
             }
 
             SpinBox {
@@ -112,7 +114,7 @@ ApplicationWindow {
             Label {
                 Layout.row: 4
                 Layout.column: 1
-                text: "Max urls:"
+                text: qsTr('Max urls:')
             }
 
             SpinBox {
@@ -133,7 +135,7 @@ ApplicationWindow {
 
                 Label {
                     height: parent.height
-                    text: "Timeout:"
+                    text: qsTr('Timeout:')
                     verticalAlignment: Text.AlignVCenter
                 }
 
@@ -157,39 +159,41 @@ ApplicationWindow {
             radius: defMargin
 
             ListView {
-                id: scannedUrlsLv
+                id: searchedUrlsLv
                 anchors.fill: parent
                 anchors.margins: 2*defMargin
                 //spacing: 1
-                model: 10
+                model: SerchedUrlsModel {
+                }
+
                 clip: true
 
                 delegate: Rectangle {
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: scannedUrlsRl.implicitHeight
+                    height: searchedUrlsRl.implicitHeight
                     anchors.rightMargin: scrollBar.visible ? scrollBar.width + defMargin : 0
                     //border { width: 2; color: 'red' }
                     color: 'transparent'
 
                     RowLayout {
-                        id: scannedUrlsRl
+                        id: searchedUrlsRl
                         anchors.fill: parent
 
                         TextField {
                             id: linkTxt
-                            text: qsTr("http://www.google.com/search?q=qthread")
-                            Layout.maximumWidth: scannedUrlsRl.width - statusUrlLoadingTxt.width
-                            //Layout.minimumWidth: scannedUrlsRl.width/2
+                            text: qsTr(model.url)
+                            Layout.maximumWidth: searchedUrlsRl.width - statusUrlLoadingTxt.width
+                            //Layout.minimumWidth: searchedUrlsRl.width/2
                             horizontalAlignment: TextInput.AlignLeft
 
                             background: Rectangle {
                                 color: backgroundForUrls.color
                                 radius: defMargin
-                                border.color: linkTxt.focus ? 'gray' : "transparent"
+                                border.color: linkTxt.focus ? 'gray' : 'transparent'
                             }
 
-                            palette { text: "blue" }
+                            palette { text: 'blue' }
 
                             font {
                                 italic: true
@@ -201,7 +205,7 @@ ApplicationWindow {
 
                         Text {
                             id: statusUrlLoadingTxt
-                            text: qsTr("Status: Loading....")
+                            text: qsTr('Status: ' + model.status.enumValue.toString())
                             Layout.maximumWidth: 150
                             Layout.minimumWidth: 150
                             Layout.alignment: Qt.AlignRight
@@ -217,10 +221,10 @@ ApplicationWindow {
 
                 ScrollBar.vertical: ScrollBar {
                     id: scrollBar
-                    policy: scannedUrlsLv.contentHeight > scannedUrlsLv.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    policy: searchedUrlsLv.contentHeight > searchedUrlsLv.height ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
                     minimumSize: 0.05
                     contentItem: Rectangle {
-                        color: scrollBar.pressed ? Qt.lighter("#7b7f7b") : "#7b7f7b"
+                        color: scrollBar.pressed ? Qt.lighter('#7b7f7b') : '#7b7f7b'
                         implicitWidth: 10
                         radius: width / 2
                     }

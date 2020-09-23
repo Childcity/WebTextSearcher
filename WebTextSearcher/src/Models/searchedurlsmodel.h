@@ -9,7 +9,7 @@
 namespace Models {
 
 
-class ScanningUrlsModel : public QAbstractListModel {
+class SerchedUrlsModel : public QAbstractListModel {
     Q_OBJECT
 
     enum ScanningUrlRoles
@@ -20,8 +20,11 @@ class ScanningUrlsModel : public QAbstractListModel {
     };
 
 public:
+
     using QAbstractListModel::QAbstractListModel;
 
+    // QAbstractItemModel interface
+public:
     QHash<int, QByteArray> roleNames() const override
     {
         return {
@@ -31,8 +34,6 @@ public:
         };
     }
 
-    // QAbstractItemModel interface
-public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override
     {
         return parent.isValid() ? 0 : static_cast<int>(urls_.size());
@@ -54,11 +55,27 @@ public:
 public:
     void emplaceBack(TextSearcherResult item)
     {
+        int lastIndex = rowCount() - 1;
+        beginInsertRows(QModelIndex(), lastIndex, lastIndex);
         urls_.emplace_back(std::move(item));
+        endInsertRows();
+    }
+
+    void reserve(size_t maxUrlsNumber)
+    {
+        urls_.reserve(maxUrlsNumber);
+    }
+
+    void clear()
+    {
+        urls_.clear();
     }
 
 private:
-    std::vector<TextSearcherResult> urls_;
+    std::vector<TextSearcherResult> urls_ {
+        TextSearcherResult { "http://www.google.com/search?q=qthread", TextSearcherStatus::NotSet, "" },
+        TextSearcherResult { "http://www.google.com/", TextSearcherStatus::Error, "rererer" }
+    };
 };
 
 
