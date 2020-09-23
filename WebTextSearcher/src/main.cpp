@@ -1,5 +1,5 @@
 #include "Models/searchedurlsmodel.h"
-#include "Dal/downloadmanager.h"
+#include "Dal/searchmanager.h"
 
 #include <QFont>
 #include <QGuiApplication>
@@ -18,9 +18,10 @@ int main(int argc, char *argv[])
 
     {
         // register qml types
+        qmlRegisterType<SearchManager>("SearchManager", 1, 0, "SearchManager");
         qmlRegisterType<Models::SerchedUrlsModel>("SerchedUrlsModel", 1, 0, "SerchedUrlsModel");
-        qmlRegisterUncreatableType<TextSearcherStatus>("TextSearcherStatus", 1, 0, "TextSearcherStatus", "TextSearcherStatus is an Enum and can't b instantiated!");
-        qRegisterMetaType<TextSearcherStatus::Value>("TextSearcherStatus::Value");
+        qmlRegisterUncreatableType<TextSearcherStatusClass>("TextSearcherStatus", 1, 0, "TextSearcherStatus", "TextSearcherStatus is an Enum and can't b instantiated!");
+        qRegisterMetaType<TextSearcherStatus>("TextSearcherStatus");
     }
 
     QQmlApplicationEngine engine;
@@ -28,8 +29,7 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    DownloadManager m;
-    //QTimer::singleShot(0, &m, &DownloadManager::slotStartSearcher);
+    //QTimer::singleShot(0, &m, &SearchManager::slotStartSearcher);
 
     return app.exec();
 }

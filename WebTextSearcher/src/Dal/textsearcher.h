@@ -16,7 +16,7 @@ public:
     explicit TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
                           QString urlToFetch, QObject *parent = nullptr) noexcept;
 
-    //~TextSearcher() override {DEBUG("~TextSearcher")}
+    ~TextSearcher() override {DEBUG("~TextSearcher")}
 
     // QRunnable interface
 public:

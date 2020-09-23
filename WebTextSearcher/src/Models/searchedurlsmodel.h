@@ -6,6 +6,7 @@
 #include <QAbstractListModel>
 #include <vector>
 
+
 namespace Models {
 
 
@@ -20,8 +21,9 @@ class SerchedUrlsModel : public QAbstractListModel {
     };
 
 public:
-
     using QAbstractListModel::QAbstractListModel;
+
+    SerchedUrlsModel(const SerchedUrlsModel &) = delete;
 
     // QAbstractItemModel interface
 public:
@@ -74,7 +76,7 @@ public:
 private:
     std::vector<TextSearcherResult> urls_ {
         TextSearcherResult { "http://www.google.com/search?q=qthread", TextSearcherStatus::NotSet, "" },
-        TextSearcherResult { "http://www.google.com/", TextSearcherStatus::Error, "rererer" }
+        TextSearcherResult { "http://www.google.com/", TextSearcherStatus::Error, "rererer wwe w ewe " }
     };
 };
 

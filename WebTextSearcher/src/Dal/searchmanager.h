@@ -1,9 +1,11 @@
-#ifndef DOWNLOADMANAGER_H
-#define DOWNLOADMANAGER_H
+#ifndef SEARCHMANAGER_H
+#define SEARCHMANAGER_H
 
 #include "Utils/Utils.hpp"
 #include "Dal/textsearcher.h"
+#include "Models/searchedurlsmodel.h"
 
+#include <QPointer>
 #include <QThreadPool>
 #include <QTimer>
 
@@ -34,6 +36,7 @@ public:
 
         queue->push("http://www.google.com/search?q=qthread");
         std::string url;
+        QString qurl;
         while (scannedUrlNumber < maxUrlNumber) {
 
             if (! queue->tryPop(url)) {
@@ -45,42 +48,59 @@ public:
                 }
             }
 
-            auto sercher = new TextSearcher(queue, QString::fromStdString(url));
+            qurl = QString::fromStdString(url);
+            auto sercher = new TextSearcher(queue, qurl);
             connect(sercher, &TextSearcher::sigResult, this, &ParallelSearcher::sigProgressChanged, Qt::QueuedConnection);
             workers.start(sercher);
+            //emit sigProgressChanged({ qurl/*std::move(qurl)*/, TextSearcherStatus::Downloading, {} });
 
             scannedUrlNumber++;
         }
         workers.waitForDone();
-        DEBUG("deeeeeeeeeeeeeeeee;" << queue->size());
+        DEBUG("deeeeeeeeeeeeeeeee;" << queue->size()<<queue.use_count());
     }
 
 signals:
     void sigProgressChanged(TextSearcherResult);
 };
 
-class DownloadManager : public QObject {
+class SearchManager : public QObject {
     Q_OBJECT
 
+    Q_PROPERTY(QVariant serchedUrlsModel READ serchedUrlsModel WRITE setSerchedUrlsModel NOTIFY serchedUrlsModelChanged)
+
 public:
-    explicit DownloadManager(QObject *parent = nullptr)
+    explicit SearchManager(QObject *parent = nullptr)
         : QObject(parent)
     {}
 
+    SearchManager(const SearchManager &) = delete;
+
+    QVariant serchedUrlsModel() const
+    {
+        return QVariant::fromValue(serchedUrlsModel_);
+    }
+
 signals:
+    void serchedUrlsModelChanged(QVariant serchedUrlsModel);
 
 public slots:
-    void slotProgressChanged(TextSearcherResult res)
+
+    void setSerchedUrlsModel(const QVariant &serchedUrlsModel)
     {
-        static std::atomic<int> r = 0;
-        r++;
-        DEBUG(res.url << ": " << res.status << res.error << r);
+        auto ptr = serchedUrlsModel.value<Models::SerchedUrlsModel *>();
+
+        if (serchedUrlsModel_ == ptr)
+            return;
+
+        serchedUrlsModel_ = ptr;
+        emit serchedUrlsModelChanged(serchedUrlsModel);
     }
 
     void slotStartSearcher()
     {
         auto sercher = new ParallelSearcher();
-        connect(sercher, &ParallelSearcher::sigProgressChanged, this, &DownloadManager::slotProgressChanged, Qt::QueuedConnection);
+        connect(sercher, &ParallelSearcher::sigProgressChanged, this, &SearchManager::slotProgressChanged, Qt::QueuedConnection);
         QThreadPool::globalInstance()->start(sercher);
     }
 
@@ -88,7 +108,18 @@ public slots:
     {
     }
 
+private slots:
+    void slotProgressChanged(TextSearcherResult res)
+    {
+//        if (serchedUrlsModel_)
+//            serchedUrlsModel_->emplaceBack(std::move(res));
+        static std::atomic<int> r = 0;
+        r++;
+        DEBUG(/*res.url << ": " << res.status << res.error <<*/ r);
+    }
+
 private:
+    QPointer<Models::SerchedUrlsModel> serchedUrlsModel_;
 };
 
-#endif // DOWNLOADMANAGER_H
+#endif // SEARCHMANAGER_H

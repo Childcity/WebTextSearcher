@@ -19,23 +19,23 @@ RESOURCES += qml.qrc
 INCLUDEPATH += src/
 
 HEADERS += \
+    src/Dal/searchmanager.h \
     src/Net/downloader.h \
     src/Net/networkerror.h \
     src/Net/idownloader.h \
     src/Dal/textsearcherresult.hpp \
     src/Dal/textsearcher.h \
     src/Dal/textsearcherstatus.hpp \
-    src/Dal/downloadmanager.h \
     src/Models/searchedurlsmodel.h
 
 SOURCES += \
+    src/Dal/searchmanager.cpp \
 	src/main.cpp \
 	src/Utils/ThreadSafeQueue.hpp \
     src/Dal/textsearcher.cpp \
     src/Net/networkerror.cpp \
     src/Net/downloader.cpp \
     src/Net/idownloader.cpp \
-    src/Dal/downloadmanager.cpp \
     src/Models/searchedurlsmodel.cpp
 
 release:DESTDIR = release

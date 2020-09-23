@@ -4,11 +4,11 @@
 #include <QObject>
 
 
-struct TextSearcherStatus {
+struct TextSearcherStatusClass {
     Q_GADGET
 
 public:
-    TextSearcherStatus() = delete;
+    TextSearcherStatusClass() = delete;
 
     enum Value
     {
@@ -20,6 +20,8 @@ public:
     };
     Q_ENUM(Value)
 };
+
+using TextSearcherStatus = TextSearcherStatusClass::Value;
 
 
 #endif // TEXTSEARCHERSTATUS_H

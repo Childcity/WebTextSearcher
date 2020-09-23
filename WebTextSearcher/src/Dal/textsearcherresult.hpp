@@ -10,7 +10,7 @@ struct TextSearcherResult {
 //
 //public:
     QString url;
-    TextSearcherStatus::Value status;
+    TextSearcherStatus status;
     QString error;
 };
 

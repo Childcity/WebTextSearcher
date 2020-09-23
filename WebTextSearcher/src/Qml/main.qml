@@ -4,6 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import SerchedUrlsModel 1.0
 import TextSearcherStatus 1.0
+import SearchManager 1.0
 
 ApplicationWindow {
     title: qsTr('Web Text Searcher')
@@ -41,6 +42,7 @@ ApplicationWindow {
             anchors.left: root.left
             ToolButton {
                 text: qsTr('Start')
+                onClicked: searchManager.slotStartSearcher()
             }
             ToolButton {
                 text: qsTr('Stop')
@@ -163,9 +165,7 @@ ApplicationWindow {
                 anchors.fill: parent
                 anchors.margins: 2*defMargin
                 //spacing: 1
-                model: SerchedUrlsModel {
-                }
-
+                model: searchManager.serchedUrlsModel
                 clip: true
 
                 delegate: Rectangle {
@@ -183,7 +183,7 @@ ApplicationWindow {
                         TextField {
                             id: linkTxt
                             text: qsTr(model.url)
-                            Layout.maximumWidth: searchedUrlsRl.width - statusUrlLoadingTxt.width
+                            Layout.maximumWidth: searchedUrlsRl.width - statusUrlLoadingTxt.width - defMargin
                             //Layout.minimumWidth: searchedUrlsRl.width/2
                             horizontalAlignment: TextInput.AlignLeft
 
@@ -205,12 +205,14 @@ ApplicationWindow {
 
                         Text {
                             id: statusUrlLoadingTxt
-                            text: qsTr('Status: ' + model.status.enumValue.toString())
-                            Layout.maximumWidth: 150
-                            Layout.minimumWidth: 150
+                            text: qsTr('Status: '
+                                       + toTextSearcherStatusString(model.status)
+                                       + (model.status === TextSearcherStatus.Error ? ': ' + model.error : ''))
+                            Layout.maximumWidth: 130
+                            Layout.minimumWidth: 130
                             Layout.alignment: Qt.AlignRight
                             verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignRight
+                            horizontalAlignment: Text.AlignLeft
 
                             font {
                                 pointSize: 8
@@ -232,4 +234,21 @@ ApplicationWindow {
             }
         }
     }
+
+    function toTextSearcherStatusString(status) {
+        switch(status){
+            case TextSearcherStatus.NotSet: return "NotSet"
+            case TextSearcherStatus.Found: return "Found"
+            case TextSearcherStatus.NotFound: return "NotFound"
+            case TextSearcherStatus.Downloading: return "Downloading"
+            case TextSearcherStatus.Error: return "Error"
+        }
+    }
+
+    SearchManager {
+        id: searchManager
+        serchedUrlsModel: SerchedUrlsModel {
+        }
+    }
 }
+
