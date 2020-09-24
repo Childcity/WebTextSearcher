@@ -7,21 +7,28 @@
 
 
 TextSearcher::TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
-                           QString urlToFetch, QObject *parent) noexcept
+                           QString urlToFetch, int urlDownloadingTimeout,
+                           QObject *parent) noexcept
     : QObject(parent)
     , urlsQueue_(std::move(urlsQueue))
     , urlToFetch_(std::move(urlToFetch))
+    , urlDownloadingTimeout_(urlDownloadingTimeout)
 {}
+
+TextSearcher::~TextSearcher()
+{
+    DEBUG("~TextSearcher")
+}
 
 void TextSearcher::run()
 {
-    using namespace std::chrono_literals;
+    using namespace std::chrono;
     using namespace Net;
 
     TextSearcherResult result;
     std::unique_ptr<IDownloader> downloader = std::make_unique<Downloader>();
 
-    downloader->setTimeout(3s);
+    downloader->setTimeout(milliseconds(urlDownloadingTimeout_));
 
     QNetworkRequest request(urlToFetch_);
     request.setMaximumRedirectsAllowed(5);
@@ -57,4 +64,19 @@ void TextSearcher::run()
 
     result.url = std::move(urlToFetch_);
     emit sigResult(std::move(result));
+}
+
+std::regex &TextSearcher::GetLinkRegex()
+{
+    static std::regex imgUrlTemplate {
+        R"_(https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*))_"
+    };
+    return imgUrlTemplate;
+}
+
+QString &TextSearcher::GetDefaultUserAgent()
+{
+    static QString userAgent = QLatin1Literal("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) "
+                                              "Gecko/20100101 Firefox/15.0.1");
+    return userAgent;
 }

@@ -42,7 +42,13 @@ ApplicationWindow {
             anchors.left: root.left
             ToolButton {
                 text: qsTr('Start')
-                onClicked: searchManager.slotStartSearcher()
+                onClicked: {
+                    if(startUrlTf.text.length < 8 /*http://a*/){
+                        startUrlTfAnim.running = true
+                        return
+                    }
+                    searchManager.slotStartSearcher()
+                }
             }
             ToolButton {
                 text: qsTr('Stop')
@@ -71,13 +77,36 @@ ApplicationWindow {
             }
 
             TextField {
-                id: startUrl
+                id: startUrlTf
+                background: Rectangle {
+                    border.color: startUrlTf.focus ? '#0066ff' : '#bdbdbd'
+                    border.width: startUrlTf.focus ? 2 : 1
+                }
+                SequentialAnimation {
+                    id: startUrlTfAnim
+                    loops: 2
+                    PropertyAnimation {
+                        target: startUrlTf.background.border
+                        property: "color"
+                        to: "red"
+                        duration: 300
+
+                    }
+                    PropertyAnimation {
+                        target: startUrlTf.background.border
+                        property: "color"
+                        to: '#bdbdbd'
+                        duration: 300
+
+                    }
+                }
                 Layout.row: 1
                 Layout.column: 2
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: controlHeight
                 placeholderText: qsTr('http://www.google.com/search?q=qthread')
+                validator: RegExpValidator { regExp: /https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/ }
             }
 
             Label {
@@ -87,7 +116,7 @@ ApplicationWindow {
             }
 
             TextField {
-                id: searchedText
+                id: searchedTextTf
                 Layout.row: 2
                 Layout.column: 2
                 Layout.columnSpan: 3
@@ -103,7 +132,7 @@ ApplicationWindow {
             }
 
             SpinBox {
-                id: maxThreadsNum
+                id: maxThreadsNumSb
                 Layout.preferredHeight: controlHeight
                 Layout.row: 3
                 Layout.column: 2
@@ -120,7 +149,7 @@ ApplicationWindow {
             }
 
             SpinBox {
-                id: maxUrlsNum
+                id: maxUrlsNumSb
                 Layout.preferredHeight: controlHeight
                 Layout.row: 4
                 Layout.column: 2
@@ -247,6 +276,10 @@ ApplicationWindow {
 
     SearchManager {
         id: searchManager
+        startUrl: startUrlTf.text
+        serchedText: searchedTextTf.text
+        maxThreadsNum: maxThreadsNumSb.value
+        maxUrlsNum: maxUrlsNumSb.value
         serchedUrlsModel: SerchedUrlsModel {
         }
     }

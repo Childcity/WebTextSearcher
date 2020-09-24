@@ -74,10 +74,7 @@ public:
     }
 
 private:
-    std::vector<TextSearcherResult> urls_ {
-        TextSearcherResult { "http://www.google.com/search?q=qthread", TextSearcherStatus::NotSet, "" },
-        TextSearcherResult { "http://www.google.com/", TextSearcherStatus::Error, "rererer wwe w ewe " }
-    };
+    std::vector<TextSearcherResult> urls_;
 };
 
 

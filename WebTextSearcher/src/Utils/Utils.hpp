@@ -19,6 +19,7 @@
 namespace Utils {
 
 
+// We store std::string instead of QString, because it much faster and take less memory
 using SafeUrlQueue = childcity::threadsafeqeue::ThreadSafeQueue<std::string>;
 
 struct DebugPrinter {

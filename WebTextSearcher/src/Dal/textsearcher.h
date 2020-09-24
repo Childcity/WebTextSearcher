@@ -14,9 +14,10 @@ class TextSearcher : public QObject, public QRunnable {
 
 public:
     explicit TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
-                          QString urlToFetch, QObject *parent = nullptr) noexcept;
+                          QString urlToFetch, int urlDownloadingTimeout,
+                          QObject *parent = nullptr) noexcept;
 
-    ~TextSearcher() override {DEBUG("~TextSearcher")}
+    ~TextSearcher() override;
 
     // QRunnable interface
 public:
@@ -26,24 +27,14 @@ signals:
     void sigResult(TextSearcherResult);
 
 private:
-    static std::regex &GetLinkRegex()
-    {
-        static std::regex imgUrlTemplate {
-            R"_(https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*))_"
-        };
-        return imgUrlTemplate;
-    }
+    static std::regex &GetLinkRegex();
 
-    static QString &GetDefaultUserAgent()
-    {
-        static QString userAgent = QLatin1Literal("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) "
-                                                  "Gecko/20100101 Firefox/15.0.1");
-        return userAgent;
-    }
+    static QString &GetDefaultUserAgent();
 
 private:
     std::shared_ptr<Utils::SafeUrlQueue> urlsQueue_;
     QString urlToFetch_;
+    int urlDownloadingTimeout_;
 };
 
 
