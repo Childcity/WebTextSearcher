@@ -3,6 +3,10 @@
 #include "textsearcher.h"
 #include <unordered_set>
 
+
+namespace Dal {
+
+
 ParallelSearcher::ParallelSearcher(int maxThreadsNum, int maxUrlsNum_, int urlDownloadingTimeout, const QString &startUrl, QString serchedText, QObject *parent)
     : QObject(parent)
     , maxThreadsNum_(maxThreadsNum)
@@ -65,5 +69,8 @@ void ParallelSearcher::startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> 
     workers.start(sercher);
 
     // Send status of current url
-    emit sigProgressChanged({ std::move(qurl), TextSearcherStatus::Downloading });
+    emit sigProgressChanged({ std::move(qurl), SearchStatusType::Downloading });
+}
+
+
 }

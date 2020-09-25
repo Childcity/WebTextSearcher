@@ -10,6 +10,9 @@
 #include <QThreadPool>
 
 
+namespace Dal {
+
+
 class SearchManager : public QObject {
     Q_OBJECT
 
@@ -21,113 +24,44 @@ class SearchManager : public QObject {
     Q_PROPERTY(int urlDownloadingTimeout READ urlDownloadingTimeout WRITE seUrlDownloadingTimeout)
 
 public:
-    explicit SearchManager(QObject *parent = nullptr) noexcept
-        : QObject(parent)
-    {}
+    explicit SearchManager(QObject *parent = nullptr);
 
     SearchManager(const SearchManager &) = delete;
 
-    QVariant serchedUrlsModel() const
-    {
-        return QVariant::fromValue(serchedUrlsModel_);
-    }
+    QVariant serchedUrlsModel() const;
 
-    QString startUrl() const
-    {
-        return startUrl_;
-    }
+    QString startUrl() const;
 
-    QString serchedText() const
-    {
-        return serchedText_;
-    }
+    QString serchedText() const;
 
-    int maxThreadsNum() const
-    {
-        return maxThreadsNum_;
-    }
+    int maxThreadsNum() const;
 
-    int maxUrlsNum() const
-    {
-        return maxUrlsNum_;
-    }
+    int maxUrlsNum() const;
 
-    int urlDownloadingTimeout() const
-    {
-        return urlDownloadingTimeout_;
-    }
+    int urlDownloadingTimeout() const;
 
 signals:
     void serchedUrlsModelChanged(QVariant serchedUrlsModel);
 
 public slots:
-    void setSerchedUrlsModel(const QVariant &serchedUrlsModel)
-    {
-        auto ptr = serchedUrlsModel.value<Models::SerchedUrlsModel *>();
+    void setSerchedUrlsModel(const QVariant &serchedUrlsModel);
 
-        if (serchedUrlsModel_ == ptr)
-            return;
+    void slotStartSearcher();
 
-        serchedUrlsModel_ = ptr;
-        emit serchedUrlsModelChanged(serchedUrlsModel);
-    }
+    void slotStopSearcher();
 
-    void slotStartSearcher()
-    {
-        if (serchedUrlsModel_) {
-            serchedUrlsModel_->clear();
-            serchedUrlsModel_->reserve(static_cast<size_t>(maxUrlsNum_));
-        }
+    void setStartUrl(QString startUrl);
 
-        auto sercher = new ParallelSearcher(maxThreadsNum_, maxUrlsNum_, urlDownloadingTimeout_,
-                                            startUrl_, serchedText_);
+    void setSerchedText(QString serchedText);
 
-        connect(sercher, &ParallelSearcher::sigProgressChanged,
-                this, &SearchManager::slotProgressChanged, Qt::QueuedConnection);
+    void setMaxThreadsNum(int maxThreadsNum);
 
-        QThreadPool::globalInstance()->start(sercher);
-    }
+    void setMaxUrlsNum(int maxUrlsNum);
 
-    void slotStopSearcher()
-    {
-    }
-
-    void setStartUrl(QString startUrl)
-    {
-        startUrl_ = std::move(startUrl);
-    }
-
-    void setSerchedText(QString serchedText)
-    {
-        serchedText_ = std::move(serchedText);
-    }
-
-    void setMaxThreadsNum(int maxThreadsNum)
-    {
-        maxThreadsNum_ = maxThreadsNum;
-    }
-
-    void setMaxUrlsNum(int maxUrlsNum)
-    {
-        maxUrlsNum_ = maxUrlsNum;
-    }
-
-    void seUrlDownloadingTimeout(int urlDownloadingTimeout)
-    {
-        urlDownloadingTimeout_ = urlDownloadingTimeout;
-    }
+    void seUrlDownloadingTimeout(int urlDownloadingTimeout);
 
 private slots:
-    void slotProgressChanged(TextSearcherResult res)
-    {
-        if (serchedUrlsModel_) {
-            if (res.status == TextSearcherStatus::Downloading) {
-                serchedUrlsModel_->emplaceBack(std::move(res));
-            } else {
-                serchedUrlsModel_->update(std::move(res));
-            }
-        }
-    }
+    void slotProgressChanged(TextSearcherStatus res);
 
 private:
     QPointer<Models::SerchedUrlsModel> serchedUrlsModel_;
@@ -137,5 +71,8 @@ private:
     int maxUrlsNum_;
     int urlDownloadingTimeout_;
 };
+
+
+} // namespace Dal
 
 #endif // SEARCHMANAGER_H

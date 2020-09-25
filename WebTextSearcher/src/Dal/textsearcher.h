@@ -2,11 +2,14 @@
 #define TEXTSEARCHER_H
 
 #include "Utils/Utils.hpp"
-#include "textsearcherresult.hpp"
+#include "textsearcherstatus.hpp"
 
 #include <QThread>
 #include <QRunnable>
 #include <regex>
+
+
+namespace Dal {
 
 
 class TextSearcher : public QObject, public QRunnable {
@@ -25,7 +28,7 @@ public:
     void run() override;
 
 signals:
-    void sigResult(TextSearcherResult);
+    void sigResult(TextSearcherStatus);
 
 private:
     static std::regex &GetLinkRegex();
@@ -39,5 +42,7 @@ private:
     int urlDownloadingTimeout_;
 };
 
+
+} // namespace Dal
 
 #endif // TEXTSEARCHER_H

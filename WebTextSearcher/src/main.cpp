@@ -18,10 +18,10 @@ int main(int argc, char *argv[])
 
     {
         // register qml types
-        qmlRegisterType<SearchManager>("SearchManager", 1, 0, "SearchManager");
+        qmlRegisterType<Dal::SearchManager>("SearchManager", 1, 0, "SearchManager");
         qmlRegisterType<Models::SerchedUrlsModel>("SerchedUrlsModel", 1, 0, "SerchedUrlsModel");
-        qmlRegisterUncreatableType<TextSearcherStatusClass>("TextSearcherStatus", 1, 0, "TextSearcherStatus", "TextSearcherStatus is an Enum and can't b instantiated!");
-        qRegisterMetaType<TextSearcherStatus>("TextSearcherStatus");
+        qmlRegisterUncreatableType<Dal::SearchStatusTypeClass>("SearchStatusType", 1, 0, "SearchStatusType", "SearchStatusType is an Enum and can't b instantiated!");
+        qRegisterMetaType<Dal::SearchStatusType>("SearchStatusType");
     }
 
     QQmlApplicationEngine engine;

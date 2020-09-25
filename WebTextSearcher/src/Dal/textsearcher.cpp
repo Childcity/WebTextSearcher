@@ -7,6 +7,9 @@
 #include <QTimer>
 
 
+namespace Dal {
+
+
 TextSearcher::TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
                            QString urlToFetch, QString serchedText,
                            int urlDownloadingTimeout,
@@ -28,7 +31,7 @@ void TextSearcher::run()
     using namespace std::chrono;
     using namespace Net;
 
-    TextSearcherResult result;
+    TextSearcherStatus result;
     std::unique_ptr<IDownloader> downloader = std::make_unique<Downloader>();
 
     downloader->setTimeout(milliseconds(urlDownloadingTimeout_));
@@ -50,8 +53,8 @@ void TextSearcher::run()
             const QByteArray ba = serchedText_.toUtf8();
             auto found = std::search(page.cbegin(), page.cend(), ba.cbegin(), ba.cend());
             result.status = (found != page.cend())
-                                ? TextSearcherStatus::Found
-                                : TextSearcherStatus::NotFound;
+                                ? SearchStatusType::Found
+                                : SearchStatusType::NotFound;
         }
 
         // Search urls in page
@@ -65,7 +68,7 @@ void TextSearcher::run()
         }
 
     } catch (const NetworkError &ex) {
-        result.status = TextSearcherStatus::Error;
+        result.status = SearchStatusType::Error;
         result.error = ex.what();
     }
 
@@ -89,3 +92,5 @@ QString &TextSearcher::GetDefaultUserAgent()
                                               "Gecko/20100101 Firefox/15.0.1");
     return userAgent;
 }
+
+} // namespace Dal

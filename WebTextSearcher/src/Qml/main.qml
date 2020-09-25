@@ -3,7 +3,7 @@ import QtQuick.Window 2.11
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import SerchedUrlsModel 1.0
-import TextSearcherStatus 1.0
+import SearchStatusType 1.0
 import SearchManager 1.0
 
 ApplicationWindow {
@@ -43,7 +43,7 @@ ApplicationWindow {
             ToolButton {
                 text: qsTr('Start')
                 onClicked: {
-                    if(startUrlTf.text.length < 8 /*http://a*/){
+                    if(startUrlTf.text.length < 8 ){ // 8 because 'http://a'
                         startUrlTfAnim.running = true
                         return
                     }
@@ -52,6 +52,7 @@ ApplicationWindow {
             }
             ToolButton {
                 text: qsTr('Stop')
+                onClicked: searchManager.slotStopSearcher()
             }
         }
     }
@@ -105,8 +106,8 @@ ApplicationWindow {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: controlHeight
-                text: 'https://doc.qt.io/archives/qq'
-                placeholderText: qsTr('http://www.google.com/search?q=qthread')
+                text: 'https://en.cppreference.com/w/cpp/algorithm/search'
+                placeholderText: qsTr('https://en.cppreference.com/w/cpp/algorithm/search')
                 validator: RegExpValidator { regExp: /https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/ }
             }
 
@@ -123,6 +124,7 @@ ApplicationWindow {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: controlHeight
+                text: 'Example'
                 placeholderText: qsTr('qthread')
             }
 
@@ -237,7 +239,7 @@ ApplicationWindow {
                             id: statusUrlLoadingTxt
                             text: qsTr('Status: '
                                        + toTextSearcherStatusString(model.status)
-                                       + (model.status === TextSearcherStatus.Error ? ': ' + model.error : ''))
+                                       + (model.status === SearchStatusType.Error ? ': ' + model.error : ''))
                             Layout.maximumWidth: 200
                             Layout.minimumWidth: 200
                             Layout.alignment: Qt.AlignRight
@@ -267,11 +269,11 @@ ApplicationWindow {
 
     function toTextSearcherStatusString(status) {
         switch(status){
-            case TextSearcherStatus.NotSet: return "NotSet"
-            case TextSearcherStatus.Found: return "Found"
-            case TextSearcherStatus.NotFound: return "NotFound"
-            case TextSearcherStatus.Downloading: return "Downloading"
-            case TextSearcherStatus.Error: return "Error"
+            case SearchStatusType.NotSet: return "NotSet"
+            case SearchStatusType.Found: return "Found"
+            case SearchStatusType.NotFound: return "NotFound"
+            case SearchStatusType.Downloading: return "Downloading"
+            case SearchStatusType.Error: return "Error"
         }
     }
 

@@ -23,11 +23,11 @@ HEADERS += \
     src/Net/downloader.h \
     src/Net/networkerror.h \
     src/Net/idownloader.h \
-    src/Dal/textsearcherresult.hpp \
     src/Dal/textsearcher.h \
-    src/Dal/textsearcherstatus.hpp \
     src/Models/searchedurlsmodel.h \
-    src/Dal/parallelsearcher.h
+    src/Dal/parallelsearcher.h \
+    src/Dal/searchstatustype.hpp \
+    src/Dal/textsearcherstatus.hpp
 
 SOURCES += \
     src/Dal/searchmanager.cpp \

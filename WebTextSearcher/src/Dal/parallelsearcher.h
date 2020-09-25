@@ -2,9 +2,12 @@
 #define PARALLELSEARCHER_H
 
 #include "Utils/Utils.hpp"
-#include "textsearcherresult.hpp"
+#include "textsearcherstatus.hpp"
 
 #include <QThreadPool>
+
+
+namespace Dal {
 
 
 class ParallelSearcher : public QObject, public QRunnable {
@@ -21,7 +24,7 @@ public:
     void run() override;
 
 signals:
-    void sigProgressChanged(TextSearcherResult);
+    void sigProgressChanged(TextSearcherStatus);
 
 private:
     void startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> &queue,
@@ -35,5 +38,7 @@ private:
     QString serchedText_;
 };
 
+
+} // namespace Dal
 
 #endif // PARALLELSEARCHER_H
