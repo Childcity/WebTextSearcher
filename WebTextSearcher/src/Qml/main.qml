@@ -155,7 +155,7 @@ ApplicationWindow {
                 Layout.row: 4
                 Layout.column: 2
                 editable: true
-                value: 10
+                value: 20
                 from: 1
                 to: 100000
             }
@@ -172,7 +172,7 @@ ApplicationWindow {
                 }
 
                 SpinBox {
-                    id: maxUrlTimeout
+                    id: maxUrlTimeoutSb
                     height: controlHeight
                     editable: true
                     value: 3000
@@ -238,8 +238,8 @@ ApplicationWindow {
                             text: qsTr('Status: '
                                        + toTextSearcherStatusString(model.status)
                                        + (model.status === TextSearcherStatus.Error ? ': ' + model.error : ''))
-                            Layout.maximumWidth: 130
-                            Layout.minimumWidth: 130
+                            Layout.maximumWidth: 200
+                            Layout.minimumWidth: 200
                             Layout.alignment: Qt.AlignRight
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignLeft
@@ -281,6 +281,7 @@ ApplicationWindow {
         serchedText: searchedTextTf.text
         maxThreadsNum: maxThreadsNumSb.value
         maxUrlsNum: maxUrlsNumSb.value
+        urlDownloadingTimeout: maxUrlTimeoutSb.value
         serchedUrlsModel: SerchedUrlsModel {
         }
     }

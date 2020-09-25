@@ -26,7 +26,8 @@ HEADERS += \
     src/Dal/textsearcherresult.hpp \
     src/Dal/textsearcher.h \
     src/Dal/textsearcherstatus.hpp \
-    src/Models/searchedurlsmodel.h
+    src/Models/searchedurlsmodel.h \
+    src/Dal/parallelsearcher.h
 
 SOURCES += \
     src/Dal/searchmanager.cpp \
@@ -36,7 +37,8 @@ SOURCES += \
     src/Net/networkerror.cpp \
     src/Net/downloader.cpp \
     src/Net/idownloader.cpp \
-    src/Models/searchedurlsmodel.cpp
+    src/Models/searchedurlsmodel.cpp \
+    src/Dal/parallelsearcher.cpp
 
 release:DESTDIR = release
 release:OBJECTS_DIR = release/obj

@@ -1,5 +1,6 @@
 #ifndef SCANNINGURLSMODEL_H
 #define SCANNINGURLSMODEL_H
+
 #include "Utils/Utils.hpp"
 #include "Dal/textsearcherresult.hpp"
 
@@ -65,12 +66,19 @@ public:
 
     void update(TextSearcherResult item)
     {
-        auto itToUpdate = std::find_if(urls_.cbegin(), urls_.cend(), [&item](const auto &res) {
+        auto itToUpdate = std::find_if(urls_.begin(), urls_.end(), [&item](const auto &res) {
             return res.hash() == item.hash();
         });
 
-DEBUG(itToUpdate->hash() <<item.hash())
-        DEBUG((itToUpdate == urls_.cend())<< itToUpdate->status<< item.status);
+        if (itToUpdate == urls_.cend()){
+            DEBUG("Updating item not found!");
+            return;
+        }
+
+        *itToUpdate = std::move(item);
+
+        QModelIndex indx = index(static_cast<int>(std::distance(urls_.begin(), itToUpdate)));
+        emit dataChanged(indx, indx, { StatusRole, ErrorRole } );
     }
 
     void reserve(size_t maxUrlsNumber)
@@ -80,7 +88,9 @@ DEBUG(itToUpdate->hash() <<item.hash())
 
     void clear()
     {
+        beginResetModel();
         urls_.clear();
+        endResetModel();
     }
 
 private:

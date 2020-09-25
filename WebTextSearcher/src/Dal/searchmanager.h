@@ -4,78 +4,11 @@
 #include "Utils/Utils.hpp"
 #include "Dal/textsearcher.h"
 #include "Models/searchedurlsmodel.h"
+#include "parallelsearcher.h"
 
 #include <QPointer>
 #include <QThreadPool>
-#include <QTimer>
 
-
-class ParallelSearcher : public QObject, public QRunnable {
-    Q_OBJECT
-
-public:
-    explicit ParallelSearcher(int maxThreadsNum, int maxUrlsNum_, int urlDownloadingTimeout,
-                              const QString &startUrl, QObject *parent = nullptr)
-        : QObject(parent)
-        , maxThreadsNum_(maxThreadsNum)
-        , maxUrlsNum_(maxUrlsNum_)
-        , urlDownloadingTimeout_(urlDownloadingTimeout)
-        , startUrl_(startUrl.toStdString())
-    {}
-
-    ~ParallelSearcher() override
-    {
-        DEBUG("~ParallelSearcher")
-    }
-
-    // QRunnable interface
-public:
-    void run() override
-    {
-        QThreadPool workers;
-        workers.setMaxThreadCount(static_cast<int>(maxThreadsNum_));
-
-        auto queue = std::make_shared<Utils::SafeUrlQueue>();
-        queue->push(std::move(startUrl_)); // We don't need startUrl_ any more
-
-        std::string url;
-        QString qurl;
-        while (int scannedUrlsNumber = 0 < maxUrlsNum_) {
-
-            if (! queue->tryPop(url)) {
-                if (workers.activeThreadCount() == 0) {
-                    break; // Means no more urls to fetch
-                } else {
-                    QThread::currentThread()->yieldCurrentThread();
-                    continue; // Means queue is empty and we should wait for filling
-                }
-            }
-
-            qurl = QString::fromStdString(url);
-            auto sercher = new TextSearcher(queue, qurl, urlDownloadingTimeout_);
-            connect(sercher, &TextSearcher::sigResult, this, &ParallelSearcher::sigProgressChanged, Qt::QueuedConnection);
-            workers.start(sercher);
-
-            // Send status of current url
-            TextSearcherStatus newUrl;
-            emit sigProgressChanged();
-
-            scannedUrlsNumber++;
-        }
-
-        workers.waitForDone();
-        //DEBUG("run()" << queue->size() << queue.use_count());
-    }
-
-signals:
-    void sigProgressChanged(TextSearcherResult);
-
-private:
-    int maxThreadsNum_;
-    int maxUrlsNum_;
-    int urlDownloadingTimeout_;
-    std::string startUrl_;
-};
 
 class SearchManager : public QObject {
     Q_OBJECT
@@ -141,11 +74,14 @@ public slots:
 
     void slotStartSearcher()
     {
-        if (serchedUrlsModel_)
+        if (serchedUrlsModel_) {
+            serchedUrlsModel_->clear();
             serchedUrlsModel_->reserve(static_cast<size_t>(maxUrlsNum_));
+        }
 
-        auto sercher = new ParallelSearcher(maxThreadsNum_, maxUrlsNum_,
-                                            urlDownloadingTimeout_, startUrl_);
+        auto sercher = new ParallelSearcher(maxThreadsNum_, maxUrlsNum_, urlDownloadingTimeout_,
+                                            startUrl_, serchedText_);
+
         connect(sercher, &ParallelSearcher::sigProgressChanged,
                 this, &SearchManager::slotProgressChanged, Qt::QueuedConnection);
 
@@ -184,9 +120,6 @@ public slots:
 private slots:
     void slotProgressChanged(TextSearcherResult res)
     {
-        //static std::atomic<int> r = 0;
-        //r++;
-        //DEBUG(res.url << ": " << res.status << res.error << r << QThread::currentThreadId());
         if (serchedUrlsModel_) {
             if (res.status == TextSearcherStatus::Downloading) {
                 serchedUrlsModel_->emplaceBack(std::move(res));

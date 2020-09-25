@@ -1,4 +1,5 @@
 #include "textsearcher.h"
+
 #include "Net/idownloader.h"
 #include "Net/downloader.h"
 #include "Net/networkerror.h"
@@ -7,11 +8,13 @@
 
 
 TextSearcher::TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
-                           QString urlToFetch, int urlDownloadingTimeout,
+                           QString urlToFetch, QString serchedText,
+                           int urlDownloadingTimeout,
                            QObject *parent) noexcept
     : QObject(parent)
     , urlsQueue_(std::move(urlsQueue))
     , urlToFetch_(std::move(urlToFetch))
+    , serchedText_(std::move(serchedText))
     , urlDownloadingTimeout_(urlDownloadingTimeout)
 {}
 
@@ -41,19 +44,24 @@ void TextSearcher::run()
     try {
         const QByteArray page = downloader->get(request);
 
-        // parse response on urls and serching text
+
+        // Search text in page
+        {
+            const QByteArray ba = serchedText_.toUtf8();
+            auto found = std::search(page.cbegin(), page.cend(), ba.cbegin(), ba.cend());
+            result.status = (found != page.cend())
+                                ? TextSearcherStatus::Found
+                                : TextSearcherStatus::NotFound;
+        }
+
+        // Search urls in page
         {
             auto matchesBegin = std::regex_token_iterator(page.cbegin(), page.cend(), GetLinkRegex());
             auto matchesEnd = std::regex_token_iterator<QByteArray::const_iterator>();
 
-            if (matchesBegin == matchesEnd) {
-                result.status = TextSearcherStatus::NotFound;
-            } else {
-                result.status = TextSearcherStatus::Found;
-                std::for_each(matchesBegin, matchesEnd, [this](const std::string url) {
-                    urlsQueue_->push(std::move(url));
-                });
-            }
+            std::for_each(matchesBegin, matchesEnd, [this](const std::string url) {
+                urlsQueue_->push(std::move(url));
+            });
         }
 
     } catch (const NetworkError &ex) {

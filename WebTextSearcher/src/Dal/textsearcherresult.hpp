@@ -8,11 +8,21 @@
 
 struct TextSearcherResult {
 public:
-    TextSearcherResult &setUrl(QString url)
+    TextSearcherResult()
+    {}
+
+    TextSearcherResult(QString url, TextSearcherStatus status_, QString error_ = {})
+        : status(status_)
+        , error(std::move(error_))
+    {
+        setUrl(std::move(url));
+    }
+
+    void setUrl(QString url)
     {
         url_ = std::move(url);
-        urlHash_ = qHash(url);
-        return *this;
+        urlHash_ = qHash(url_);
+        assert(urlHash_ != 0); // url and urlHash_ mustn't be Empty!
     }
 
     QString url() const

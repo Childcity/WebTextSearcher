@@ -52,6 +52,9 @@ std::chrono::milliseconds Downloader::getTimeout() const
 
 void Downloader::setTimeout(const std::chrono::milliseconds timeout)
 {
+    if (timeout.count() <= 0)
+        throw std::invalid_argument("Downloader::setTimeout: 'timeout' must be > 0");
+
     deadlineTimer_.setInterval(timeout);
 }
 
