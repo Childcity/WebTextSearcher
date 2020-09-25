@@ -17,7 +17,7 @@ TextSearcher::TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
 
 TextSearcher::~TextSearcher()
 {
-    DEBUG("~TextSearcher")
+    //DEBUG("~TextSearcher")
 }
 
 void TextSearcher::run()
@@ -35,6 +35,7 @@ void TextSearcher::run()
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                          QNetworkRequest::UserVerifiedRedirectPolicy);
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+    request.setAttribute(QNetworkRequest::CacheSaveControlAttribute, false);
     request.setHeader(QNetworkRequest::UserAgentHeader, GetDefaultUserAgent());
 
     try {
@@ -62,7 +63,7 @@ void TextSearcher::run()
 
     //DEBUG(result.status << result.url);
 
-    result.url = std::move(urlToFetch_);
+    result.setUrl(std::move(urlToFetch_));
     emit sigResult(std::move(result));
 }
 

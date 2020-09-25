@@ -32,7 +32,6 @@ public:
 public:
     void run() override
     {
-        int scannedUrlsNumber = 0;
         QThreadPool workers;
         workers.setMaxThreadCount(static_cast<int>(maxThreadsNum_));
 
@@ -41,7 +40,7 @@ public:
 
         std::string url;
         QString qurl;
-        while (scannedUrlsNumber < maxUrlsNum_) {
+        while (int scannedUrlsNumber = 0 < maxUrlsNum_) {
 
             if (! queue->tryPop(url)) {
                 if (workers.activeThreadCount() == 0) {
@@ -58,13 +57,14 @@ public:
             workers.start(sercher);
 
             // Send status of current url
-            emit sigProgressChanged({ std::move(qurl), TextSearcherStatus::Downloading, {} });
+            TextSearcherStatus newUrl;
+            emit sigProgressChanged();
 
             scannedUrlsNumber++;
         }
 
         workers.waitForDone();
-        DEBUG("run()" << queue->size() << queue.use_count());
+        //DEBUG("run()" << queue->size() << queue.use_count());
     }
 
 signals:
@@ -148,6 +148,7 @@ public slots:
                                             urlDownloadingTimeout_, startUrl_);
         connect(sercher, &ParallelSearcher::sigProgressChanged,
                 this, &SearchManager::slotProgressChanged, Qt::QueuedConnection);
+
         QThreadPool::globalInstance()->start(sercher);
     }
 
@@ -183,11 +184,16 @@ public slots:
 private slots:
     void slotProgressChanged(TextSearcherResult res)
     {
-        static std::atomic<int> r = 0;
-        r++;
-        DEBUG(res.url << ": " << res.status << res.error << r << QThread::currentThreadId());
-        if (serchedUrlsModel_)
-            serchedUrlsModel_->emplaceBack(std::move(res));
+        //static std::atomic<int> r = 0;
+        //r++;
+        //DEBUG(res.url << ": " << res.status << res.error << r << QThread::currentThreadId());
+        if (serchedUrlsModel_) {
+            if (res.status == TextSearcherStatus::Downloading) {
+                serchedUrlsModel_->emplaceBack(std::move(res));
+            } else {
+                serchedUrlsModel_->update(std::move(res));
+            }
+        }
     }
 
 private:

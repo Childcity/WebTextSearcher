@@ -1,6 +1,6 @@
 #ifndef SCANNINGURLSMODEL_H
 #define SCANNINGURLSMODEL_H
-
+#include "Utils/Utils.hpp"
 #include "Dal/textsearcherresult.hpp"
 
 #include <QAbstractListModel>
@@ -47,7 +47,7 @@ public:
             return {};
 
         const TextSearcherResult &item = urls_.at(static_cast<size_t>(index.row()));
-        if (role == UrlRole) return item.url;
+        if (role == UrlRole) return item.url();
         if (role == StatusRole) return item.status;
         if (role == ErrorRole) return item.error;
 
@@ -57,10 +57,20 @@ public:
 public:
     void emplaceBack(TextSearcherResult item)
     {
-        int lastIndex = rowCount() - 1;
+        int lastIndex = rowCount();
         beginInsertRows(QModelIndex(), lastIndex, lastIndex);
         urls_.emplace_back(std::move(item));
         endInsertRows();
+    }
+
+    void update(TextSearcherResult item)
+    {
+        auto itToUpdate = std::find_if(urls_.cbegin(), urls_.cend(), [&item](const auto &res) {
+            return res.hash() == item.hash();
+        });
+
+DEBUG(itToUpdate->hash() <<item.hash())
+        DEBUG((itToUpdate == urls_.cend())<< itToUpdate->status<< item.status);
     }
 
     void reserve(size_t maxUrlsNumber)

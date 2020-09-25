@@ -105,6 +105,7 @@ ApplicationWindow {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: controlHeight
+                text: 'https://doc.qt.io/archives/qq'
                 placeholderText: qsTr('http://www.google.com/search?q=qthread')
                 validator: RegExpValidator { regExp: /https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/ }
             }
@@ -154,7 +155,7 @@ ApplicationWindow {
                 Layout.row: 4
                 Layout.column: 2
                 editable: true
-                value: 500
+                value: 10
                 from: 1
                 to: 100000
             }
@@ -174,7 +175,7 @@ ApplicationWindow {
                     id: maxUrlTimeout
                     height: controlHeight
                     editable: true
-                    value: 500
+                    value: 3000
                     from: 1
                     to: 100000
                 }
