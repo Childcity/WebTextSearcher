@@ -26,10 +26,11 @@ signals:
 
 private:
     void startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> &queue,
-                       QThreadPool &workers, const std::string &url,
-                       const std::atomic_bool &isCanceled);
+                       QThreadPool &workers, const std::string &url);
 
     bool isCanceled() const;
+
+    void waitForDoneOrCancel(QThreadPool &workers);
 
 private:
     int maxThreadsNum_;
@@ -37,6 +38,8 @@ private:
     int urlDownloadingTimeout_;
     std::string startUrl_;
     QString serchedText_;
+
+    std::atomic_bool isCanceletionRequested_;
 };
 
 

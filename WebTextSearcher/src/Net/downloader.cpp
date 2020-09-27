@@ -48,7 +48,6 @@ QByteArray Downloader::get(const QNetworkRequest &request)
     const std::unique_ptr<QNetworkReply> reply(networkManager_->get(request));
     QObject::connect(&*reply, &QNetworkReply::redirected, &*reply, &QNetworkReply::redirectAllowed);
     QObject::connect(deadlineTimer_, &QTimer::timeout, &*reply, &QNetworkReply::abort);
-    //QObject::connect(cancelationChacker_, &QTimer::timeout, &*reply, &QNetworkReply::abort);
 
     deadlineTimer_->start();
     cancelationChacker_->start();

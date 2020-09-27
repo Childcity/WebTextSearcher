@@ -39,6 +39,7 @@ private:
     QNetworkAccessManager *networkManager_;
     QTimer *deadlineTimer_;
     QTimer *cancelationChacker_;
+
     const std::atomic_bool &isCancelationRequested_;
 };
 

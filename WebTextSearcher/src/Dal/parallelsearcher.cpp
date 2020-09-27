@@ -14,6 +14,7 @@ ParallelSearcher::ParallelSearcher(int maxThreadsNum, int maxUrlsNum_, int urlDo
     , urlDownloadingTimeout_(urlDownloadingTimeout)
     , startUrl_(startUrl.toStdString())
     , serchedText_(std::move(serchedText))
+    , isCanceletionRequested_(false)
 {}
 
 ParallelSearcher::~ParallelSearcher()
@@ -29,7 +30,6 @@ void ParallelSearcher::run()
     int scannedUrlsNumber = 0;
     QThreadPool workers;
     workers.setMaxThreadCount(static_cast<int>(maxThreadsNum_));
-    std::atomic_bool isCanceledDownload = false;
 
     // Create thread safe queue of urls to be downloaded later
     auto queue = std::make_shared<Utils::SafeUrlQueue>();
@@ -40,12 +40,7 @@ void ParallelSearcher::run()
 
 
     std::string nextUrl;
-    while (scannedUrlsNumber < maxUrlsNum_) {
-
-        if (isCanceled()) {
-            isCanceledDownload.store(true, std::memory_order_relaxed);
-            break;
-        }
+    while (scannedUrlsNumber < maxUrlsNum_ && (! isCanceled())) {
 
         if (! queue->tryPop(nextUrl)) {
             if (workers.activeThreadCount() == 0) {
@@ -62,24 +57,21 @@ void ParallelSearcher::run()
                 continue;
         }
 
-        startSearcher(queue, workers, nextUrl, isCanceledDownload);
-
+        startSearcher(queue, workers, nextUrl);
         scannedUrlsNumber++;
     }
 
-    workers.waitForDone();
-    DEBUG("run()" << queue->size() << queue.use_count() << "isCanceled()" << isCanceled());
+    waitForDoneOrCancel(workers);
 }
 
 void ParallelSearcher::startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> &queue,
-                                     QThreadPool &workers, const std::string &url,
-                                     const std::atomic_bool &isCanceledDownload)
+                                     QThreadPool &workers, const std::string &url)
 {
     Utils::OnExit _([this] { this->setTerminationEnabled(true); });
     setTerminationEnabled(false);
 
     QString qurl = QString::fromStdString(url);
-    auto sercher = new TextSearcher(queue, qurl, serchedText_, urlDownloadingTimeout_, isCanceledDownload);
+    auto sercher = new TextSearcher(queue, qurl, serchedText_, urlDownloadingTimeout_, isCanceletionRequested_);
     connect(sercher, &TextSearcher::sigResult, this, &ParallelSearcher::sigProgressChanged, Qt::QueuedConnection);
     workers.start(sercher);
 
@@ -90,6 +82,20 @@ void ParallelSearcher::startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> 
 bool ParallelSearcher::isCanceled() const
 {
     return QThread::isInterruptionRequested();
+}
+
+void ParallelSearcher::waitForDoneOrCancel(QThreadPool &workers)
+{
+    // We must wait in while loop to check, if user requested cancelation
+    while (workers.activeThreadCount() > 0) {
+        if (isCanceled()) {
+            isCanceletionRequested_.store(true, std::memory_order_relaxed);
+            break;
+        }
+        QThread::currentThread()->yieldCurrentThread();
+    }
+
+    workers.waitForDone();
 }
 
 
