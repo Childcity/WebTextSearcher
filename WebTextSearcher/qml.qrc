@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>src/Qml/main.qml</file>
+        <file>src/Qml/MainWindow.qml</file>
+        <file>src/Qml/AppToolBar.qml</file>
+        <file>src/Qml/SearcherParamsForm.qml</file>
     </qresource>
 </RCC>
