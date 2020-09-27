@@ -10,7 +10,7 @@
 namespace Dal {
 
 
-class ParallelSearcher : public QObject, public QRunnable {
+class ParallelSearcher : public QThread {
     Q_OBJECT
 
 public:
@@ -19,8 +19,6 @@ public:
 
     ~ParallelSearcher() override;
 
-    // QRunnable interface
-public:
     void run() override;
 
 signals:
@@ -28,7 +26,10 @@ signals:
 
 private:
     void startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> &queue,
-                       QThreadPool &workers, const std::string &url);
+                       QThreadPool &workers, const std::string &url,
+                       const std::atomic_bool &isCanceled);
+
+    bool isCanceled() const;
 
 private:
     int maxThreadsNum_;

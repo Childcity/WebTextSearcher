@@ -8,6 +8,11 @@ SearchManager::SearchManager(QObject *parent)
     : QObject(parent)
 {}
 
+SearchManager::~SearchManager()
+{
+    slotStopSearcher();
+}
+
 QVariant SearchManager::serchedUrlsModel() const
 {
     return QVariant::fromValue(serchedUrlsModel_);
@@ -56,18 +61,29 @@ void SearchManager::slotStartSearcher()
         serchedUrlsModel_->reserve(static_cast<size_t>(maxUrlsNum_));
     }
 
-    auto sercher = new ParallelSearcher(maxThreadsNum_, maxUrlsNum_, urlDownloadingTimeout_,
-                                        startUrl_, serchedText_);
+    slotStopSearcher();
 
-    connect(sercher, &ParallelSearcher::sigProgressChanged,
+    searcher_ = Utils::qt_make_unique<ParallelSearcher>(maxThreadsNum_, maxUrlsNum_, urlDownloadingTimeout_,
+                                                        startUrl_, serchedText_, this);
+
+    connect(&*searcher_, &ParallelSearcher::sigProgressChanged,
             this, &SearchManager::slotProgressChanged, Qt::QueuedConnection);
 
-    QThreadPool::globalInstance()->start(sercher);
+    searcher_->start();
 }
 
 void SearchManager::slotStopSearcher()
 {
-
+    if (searcher_) {
+        if (searcher_->isRunning()) {
+            searcher_->requestInterruption();
+            if (! searcher_->wait(8000)) {
+                DEBUG("Searcher thread will be terminated directly!");
+                searcher_->terminate();
+                searcher_->wait();
+            }
+        }
+    }
 }
 
 void SearchManager::setStartUrl(QString startUrl)

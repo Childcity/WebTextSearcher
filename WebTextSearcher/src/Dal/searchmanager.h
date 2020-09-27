@@ -26,6 +26,8 @@ class SearchManager : public QObject {
 public:
     explicit SearchManager(QObject *parent = nullptr);
 
+    ~SearchManager();
+
     SearchManager(const SearchManager &) = delete;
 
     QVariant serchedUrlsModel() const;
@@ -65,6 +67,7 @@ private slots:
 
 private:
     QPointer<Models::SerchedUrlsModel> serchedUrlsModel_;
+    Utils::qt_unique_ptr<ParallelSearcher> searcher_;
     QString startUrl_;
     QString serchedText_;
     int maxThreadsNum_;

@@ -27,10 +27,12 @@ HEADERS += \
     src/Models/searchedurlsmodel.h \
     src/Dal/parallelsearcher.h \
     src/Dal/searchstatustype.hpp \
-    src/Dal/textsearcherstatus.hpp
+    src/Dal/textsearcherstatus.hpp \
+    src/Net/operationcancelederror.h
 
 SOURCES += \
     src/Dal/searchmanager.cpp \
+    src/Net/operationcancelederror.cpp \
 	src/main.cpp \
 	src/Utils/ThreadSafeQueue.hpp \
     src/Dal/textsearcher.cpp \

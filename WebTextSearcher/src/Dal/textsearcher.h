@@ -18,7 +18,7 @@ class TextSearcher : public QObject, public QRunnable {
 public:
     explicit TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
                           QString urlToFetch, QString serchedText,
-                          int urlDownloadingTimeout,
+                          int urlDownloadingTimeout, const std::atomic_bool &isCanceled,
                           QObject *parent = nullptr) noexcept;
 
     ~TextSearcher() override;
@@ -40,6 +40,7 @@ private:
     QString urlToFetch_;
     QString serchedText_;
     int urlDownloadingTimeout_;
+    const std::atomic_bool &isCanceled_;
 };
 
 

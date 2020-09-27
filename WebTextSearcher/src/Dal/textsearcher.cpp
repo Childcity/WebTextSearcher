@@ -1,10 +1,9 @@
 #include "textsearcher.h"
 
+#include "Net/operationcancelederror.h"
+#include "Net/networkerror.h"
 #include "Net/idownloader.h"
 #include "Net/downloader.h"
-#include "Net/networkerror.h"
-
-#include <QTimer>
 
 
 namespace Dal {
@@ -12,19 +11,18 @@ namespace Dal {
 
 TextSearcher::TextSearcher(std::shared_ptr<Utils::SafeUrlQueue> urlsQueue,
                            QString urlToFetch, QString serchedText,
-                           int urlDownloadingTimeout,
+                           int urlDownloadingTimeout, const std::atomic_bool &isCanceled,
                            QObject *parent) noexcept
     : QObject(parent)
     , urlsQueue_(std::move(urlsQueue))
     , urlToFetch_(std::move(urlToFetch))
     , serchedText_(std::move(serchedText))
     , urlDownloadingTimeout_(urlDownloadingTimeout)
+    , isCanceled_(isCanceled)
 {}
 
 TextSearcher::~TextSearcher()
-{
-    //DEBUG("~TextSearcher")
-}
+{}
 
 void TextSearcher::run()
 {
@@ -32,7 +30,7 @@ void TextSearcher::run()
     using namespace Net;
 
     TextSearcherStatus result;
-    std::unique_ptr<IDownloader> downloader = std::make_unique<Downloader>();
+    std::unique_ptr<IDownloader> downloader = std::make_unique<Downloader>(isCanceled_);
 
     downloader->setTimeout(milliseconds(urlDownloadingTimeout_));
 
@@ -45,6 +43,9 @@ void TextSearcher::run()
     request.setHeader(QNetworkRequest::UserAgentHeader, GetDefaultUserAgent());
 
     try {
+        if (isCanceled_.load(std::memory_order_relaxed))
+            throw OperationCanceledError();
+
         const QByteArray page = downloader->get(request);
 
 
@@ -67,12 +68,10 @@ void TextSearcher::run()
             });
         }
 
-    } catch (const NetworkError &ex) {
+    } catch (const std::runtime_error &ex) {
         result.status = SearchStatusType::Error;
         result.error = ex.what();
     }
-
-    //DEBUG(result.status << result.url);
 
     result.setUrl(std::move(urlToFetch_));
     emit sigResult(std::move(result));

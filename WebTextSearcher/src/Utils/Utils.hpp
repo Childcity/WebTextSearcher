@@ -60,6 +60,22 @@ inline qt_unique_ptr<T> qt_make_unique(_Types &&... _Args)
 }
 
 
+template<typename Functor>
+struct OnExit {
+    Functor func;
+    OnExit(Functor &&f)
+        : func(std::forward<Functor>(f))
+    {}
+    ~OnExit()
+    {
+        func();
+    }
+};
+
+template<typename Functor>
+OnExit(Functor &&frv) -> OnExit<Functor>;
+
+
 } // namespace Utils
 
 
