@@ -32,10 +32,11 @@ HEADERS += \
     src/Dal/searchmanagerstatus.h
 
 SOURCES += \
+    src/main.cpp \
+    #src/Utils/Utils.hpp \
     src/Dal/searchmanager.cpp \
     src/Net/operationcancelederror.cpp \
-	src/main.cpp \
-	src/Utils/ThreadSafeQueue.hpp \
+    src/Utils/ThreadSafeQueue.hpp \
     src/Dal/textsearcher.cpp \
     src/Net/networkerror.cpp \
     src/Net/downloader.cpp \

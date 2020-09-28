@@ -76,6 +76,31 @@ template<typename Functor>
 OnExit(Functor &&frv) -> OnExit<Functor>;
 
 
+// Default message handler to be called to bypass all other warnings.
+static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(0);
+
+
+struct CustomMessageHandler {
+    static void Handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+    {
+        // suppress warning with cache, as it is bug: https://github.com/ariya/phantomjs/issues/13165
+        switch (type) {
+            case QtDebugMsg: {
+                if (! msg.contains("setCachingEnabled"))
+                    (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
+            } break;
+            case QtWarningMsg: {
+                if (! msg.contains("caching"))
+                    (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
+            } break;
+            default:
+                (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
+                break;
+        }
+    }
+};
+
+
 } // namespace Utils
 
 

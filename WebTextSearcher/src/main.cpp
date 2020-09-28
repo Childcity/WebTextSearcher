@@ -5,11 +5,11 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+    qInstallMessageHandler(Utils::CustomMessageHandler::Handler);
     app.setOrganizationName("Childcity");
     app.setApplicationName("Web Text Searcher");
 
@@ -37,3 +37,6 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
+
+
+
