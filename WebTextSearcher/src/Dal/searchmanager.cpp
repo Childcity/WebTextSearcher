@@ -62,7 +62,7 @@ void SearchManager::setSerchedUrlsModel(const QVariant &serchedUrlsModel)
 
 void SearchManager::slotStartSearcher()
 {
-    // Stop and disconnect searcher_
+    // Stop and disconnect old searcher_
     if (status_ != SearchManagerStatus::Stopped) {
         if (searcher_)
             searcher_->disconnect(this);
