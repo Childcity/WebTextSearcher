@@ -7,7 +7,8 @@
 namespace Dal {
 
 
-ParallelSearcher::ParallelSearcher(int maxThreadsNum, int maxUrlsNum_, int urlDownloadingTimeout, const QString &startUrl, QString serchedText, QObject *parent)
+ParallelSearcher::ParallelSearcher(int maxThreadsNum, int maxUrlsNum_, int urlDownloadingTimeout,
+                                   const QString &startUrl, QString serchedText, QObject *parent)
     : QThread(parent)
     , maxThreadsNum_(maxThreadsNum)
     , maxUrlsNum_(maxUrlsNum_)
@@ -18,9 +19,7 @@ ParallelSearcher::ParallelSearcher(int maxThreadsNum, int maxUrlsNum_, int urlDo
 {}
 
 ParallelSearcher::~ParallelSearcher()
-{
-    DEBUG("~ParallelSearcher")
-}
+{}
 
 void ParallelSearcher::run()
 {

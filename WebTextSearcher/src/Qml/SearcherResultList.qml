@@ -45,19 +45,17 @@ Rectangle {
 
                     Label {
                         id: indexLb
-                        text: index + 1
-                        font: linkTxt.font
                         Layout.minimumWidth: 35
                         Layout.maximumWidth: 35
                         Layout.alignment: Qt.AlignLeft
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignLeft
+                        text: index + 1
+                        font: linkTxt.font
                     }
 
                     TextField {
                         id: linkTxt
-                        text: qsTr(model.url)
-                        //clip: true
                         Layout.maximumWidth: searchedUrlsRl.width
                                              - indexLb.width
                                              - statusUrlLoadingTxtWraper.width
@@ -65,6 +63,9 @@ Rectangle {
                         Layout.alignment: Qt.AlignLeft
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignLeft
+
+                        text: qsTr(model.url)
+                        selectByMouse: true
 
                         background: Rectangle {
                             color: root.color
@@ -93,13 +94,14 @@ Rectangle {
                         Layout.alignment: Qt.AlignRight
 
                         Text {
-                            anchors.fill: statusUrlLoadingTxtWraper
                             id: statusUrlLoadingTxt
+                            anchors.fill: statusUrlLoadingTxtWraper
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignLeft
+
                             text: qsTr('Status: '
                                        + toTextSearcherStatusString(model.status)
                                        + (model.status === SearchStatusType.Error ? ': ' + model.error : ''))
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignLeft
 
                             font {
                                 pointSize: 8

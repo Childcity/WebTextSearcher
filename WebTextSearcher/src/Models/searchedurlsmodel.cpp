@@ -45,7 +45,7 @@ void Models::SerchedUrlsModel::update(Dal::TextSearcherStatus item,  const QVect
     });
 
     if (itToUpdate == urls_.cend()) {
-        DEBUG("Updating item not found!");
+        DEBUG("Info: Updating item not found");
         return;
     }
 

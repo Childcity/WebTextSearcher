@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import Qt.labs.settings 1.0
 import SerchedUrlsModel 1.0
 import SearchManager 1.0
 
@@ -61,6 +62,13 @@ ApplicationWindow {
         urlDownloadingTimeout: searcherParamsForm.urlDownloadingTimeout
         serchedUrlsModel: SerchedUrlsModel {
         }
+    }
+
+    onClosing: searchManager.slotStopSearcher()
+
+    Settings {
+        property alias appWndWidth: root.width
+        property alias appWndHeight: root.height
     }
 }
 

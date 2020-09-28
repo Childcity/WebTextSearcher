@@ -1,6 +1,7 @@
 import QtQuick 2.11
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
+import Qt.labs.settings 1.0
 
 GridLayout {
     id: root
@@ -39,14 +40,15 @@ GridLayout {
         Layout.columnSpan: 3
         Layout.fillWidth: true
         Layout.preferredHeight: controlHeight
-        text: 'https://en.cppreference.com/w/cpp/algorithm/search'
         placeholderText: qsTr('https://en.cppreference.com/w/cpp/algorithm/search')
         validator: RegExpValidator { regExp: /https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/ }
+        selectByMouse: true
 
         SequentialAnimation {
             id: startUrlNotPresentAnim
             loops: 2
             onStarted: startUrlTf.focus = true
+            onStopped: { startUrlTf.focus = false; startUrlTf.focus = true }
             PropertyAnimation {
                 target: startUrlTf.background.border
                 property: "color"
@@ -77,8 +79,8 @@ GridLayout {
         Layout.columnSpan: 3
         Layout.fillWidth: true
         Layout.preferredHeight: controlHeight
-        //text: 'Example'
         placeholderText: qsTr('qthread')
+        selectByMouse: true
     }
 
     Label {
@@ -143,5 +145,13 @@ GridLayout {
         if(startUrlTf.text.length < 8 ){ // 8 because 'http://a'
             startUrlNotPresentAnim.running = true
         }
+    }
+
+    Settings {
+        property alias startUrl: startUrlTf.text
+        property alias searchedText: searchedTextTf.text
+        property alias maxThreadsNum: maxThreadsNumSb.value
+        property alias maxUrlsNum: maxUrlsNumSb.value
+        property alias maxUrlTimeout: maxUrlTimeoutSb.value
     }
 }
