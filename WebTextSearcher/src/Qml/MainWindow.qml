@@ -32,10 +32,7 @@ ApplicationWindow {
             searchManager.slotStartSearcher()
         }
         onStopClicked: searchManager.slotStopSearcher()
-        searchManagerStatus: {
-            console.log(searchManager.status)
-            searchManager.status
-        }
+        searchManagerStatus: searchManager.status
     }
 
     ColumnLayout {

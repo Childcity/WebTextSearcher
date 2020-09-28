@@ -46,7 +46,7 @@ Rectangle {
 
                     Label {
                         id: indexLb
-                        Layout.minimumWidth: 35
+                        Layout.minimumWidth: 35 // max length for '999999'
                         Layout.maximumWidth: 35
                         Layout.alignment: Qt.AlignLeft
                         verticalAlignment: Text.AlignVCenter
@@ -131,11 +131,14 @@ Rectangle {
             anchors.right: margedRoot.right
             anchors.bottom: margedRoot.bottom
             padding: 2
-            value: searchedUrlsLv.model.rowCount
+            value: searchManager.status == SearchManagerStatus.Stopped
+                   ? 0
+                   : searchedUrlsLv.model.rowCount
+
             from: 0
-            to: searchManager.status !== SearchManagerStatus.Stopped
-                ? progress.to
-                : searchManager.maxUrlsNum
+            to: searchManager.status == SearchManagerStatus.Stopped
+                ? searchManager.maxUrlsNum
+                : progress.to
 
             background: Rectangle {
                 implicitWidth: 200
