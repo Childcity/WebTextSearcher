@@ -3,6 +3,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import SearchStatusType 1.0
 import SearchManager 1.0
+import SearchManagerStatus 1.0
 
 Rectangle {
     id: root
@@ -132,7 +133,9 @@ Rectangle {
             padding: 2
             value: searchedUrlsLv.model.rowCount
             from: 0
-            to: searchManager.maxUrlsNum
+            to: searchManager.status !== SearchManagerStatus.Stopped
+                ? progress.to
+                : searchManager.maxUrlsNum
 
             background: Rectangle {
                 implicitWidth: 200

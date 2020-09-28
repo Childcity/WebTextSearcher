@@ -5,6 +5,7 @@
 #include "Dal/textsearcher.h"
 #include "Models/searchedurlsmodel.h"
 #include "parallelsearcher.h"
+#include "searchmanagerstatus.h"
 
 #include <QPointer>
 #include <QThreadPool>
@@ -16,12 +17,13 @@ namespace Dal {
 class SearchManager : public QObject {
     Q_OBJECT
 
+    Q_PROPERTY(SearchManagerStatus status READ status NOTIFY statusChanged)
     Q_PROPERTY(QVariant serchedUrlsModel READ serchedUrlsModel WRITE setSerchedUrlsModel NOTIFY serchedUrlsModelChanged)
     Q_PROPERTY(QString startUrl READ startUrl WRITE setStartUrl)
     Q_PROPERTY(QString serchedText READ serchedText WRITE setSerchedText)
     Q_PROPERTY(int maxThreadsNum READ maxThreadsNum WRITE setMaxThreadsNum)
     Q_PROPERTY(int maxUrlsNum READ maxUrlsNum WRITE setMaxUrlsNum NOTIFY maxUrlsNumChanged)
-    Q_PROPERTY(int urlDownloadingTimeout READ urlDownloadingTimeout WRITE seUrlDownloadingTimeout)
+    Q_PROPERTY(int urlDownloadingTimeout READ urlDownloadingTimeout WRITE setUrlDownloadingTimeout)
 
 public:
     explicit SearchManager(QObject *parent = nullptr);
@@ -42,10 +44,14 @@ public:
 
     int urlDownloadingTimeout() const;
 
+    SearchManagerStatus status() const;
+
 signals:
     void serchedUrlsModelChanged(QVariant serchedUrlsModel);
 
     void maxUrlsNumChanged();
+
+    void statusChanged(SearchManagerStatus status);
 
 public slots:
     void setSerchedUrlsModel(const QVariant &serchedUrlsModel);
@@ -62,12 +68,18 @@ public slots:
 
     void setMaxUrlsNum(int maxUrlsNum);
 
-    void seUrlDownloadingTimeout(int urlDownloadingTimeout);
+    void setUrlDownloadingTimeout(int urlDownloadingTimeout);
 
 private slots:
     void slotProgressChanged(TextSearcherStatus res);
 
 private:
+    void setStatus(SearchManagerStatus status);
+
+    void startParallelSearcher();
+
+private:
+    SearchManagerStatus status_;
     QPointer<Models::SerchedUrlsModel> serchedUrlsModel_;
     Utils::qt_unique_ptr<ParallelSearcher> searcher_;
     QString startUrl_;

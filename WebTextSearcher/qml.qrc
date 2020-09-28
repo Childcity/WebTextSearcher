@@ -4,5 +4,6 @@
         <file>src/Qml/AppToolBar.qml</file>
         <file>src/Qml/SearcherParamsForm.qml</file>
         <file>src/Qml/SearcherResultList.qml</file>
+        <file>src/Qml/CustomControls/RoundBusyIndicator.qml</file>
     </qresource>
 </RCC>

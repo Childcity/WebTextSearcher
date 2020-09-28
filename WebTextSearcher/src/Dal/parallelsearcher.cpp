@@ -62,6 +62,8 @@ void ParallelSearcher::run()
     }
 
     waitForDoneOrCancel(workers);
+
+    emit sigWorkIsDone();
 }
 
 void ParallelSearcher::startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> &queue,

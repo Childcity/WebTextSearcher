@@ -24,6 +24,8 @@ public:
 signals:
     void sigProgressChanged(TextSearcherStatus);
 
+    void sigWorkIsDone();
+
 private:
     void startSearcher(const std::shared_ptr<Utils::SafeUrlQueue> &queue,
                        QThreadPool &workers, const std::string &url);

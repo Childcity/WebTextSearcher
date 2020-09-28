@@ -29,5 +29,4 @@ using SearchStatusType = SearchStatusTypeClass::Value;
 
 } // namespace Dal
 
-
 #endif // SEARCHSTATUSTYPE_H

@@ -24,6 +24,8 @@ int main(int argc, char *argv[])
         qmlRegisterType<Models::SerchedUrlsModel>("SerchedUrlsModel", 1, 0, "SerchedUrlsModel");
         qmlRegisterUncreatableType<Dal::SearchStatusTypeClass>("SearchStatusType", 1, 0, "SearchStatusType", "SearchStatusType is an Enum and can't b instantiated!");
         qRegisterMetaType<Dal::SearchStatusType>("SearchStatusType");
+        qmlRegisterUncreatableType<Dal::SearchManagerStatusClass>("SearchManagerStatus", 1, 0, "SearchManagerStatus", "SearchManagerStatus is an Enum and can't b instantiated!");
+        qRegisterMetaType<Dal::SearchManagerStatus>("SearchManagerStatus");
     }
 
     QQmlApplicationEngine engine;

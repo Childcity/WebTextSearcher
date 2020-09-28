@@ -28,7 +28,8 @@ HEADERS += \
     src/Dal/parallelsearcher.h \
     src/Dal/searchstatustype.hpp \
     src/Dal/textsearcherstatus.hpp \
-    src/Net/operationcancelederror.h
+    src/Net/operationcancelederror.h \
+    src/Dal/searchmanagerstatus.h
 
 SOURCES += \
     src/Dal/searchmanager.cpp \
