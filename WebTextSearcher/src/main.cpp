@@ -33,8 +33,6 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    //QTimer::singleShot(0, &m, &SearchManager::slotStartSearcher);
-
     return app.exec();
 }
 
