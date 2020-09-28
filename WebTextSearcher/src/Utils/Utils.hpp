@@ -83,14 +83,15 @@ static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandle
 struct CustomMessageHandler {
     static void Handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
     {
-        // suppress warning with cache, as it is bug: https://github.com/ariya/phantomjs/issues/13165
+        // Suppress warning with cache, as it is bug: https://github.com/ariya/phantomjs/issues/13165
+        // Suppress warning with QNetworkReplyImplPrivate https://github.com/raelgc/scudcloud/issues/546
         switch (type) {
             case QtDebugMsg: {
                 if (! msg.contains("setCachingEnabled"))
                     (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
             } break;
-            case QtWarningMsg: {
-                if (! msg.contains("caching"))
+            case QtCriticalMsg: {
+                if (! msg.contains("QNetworkReplyImpl"))
                     (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
             } break;
             default:

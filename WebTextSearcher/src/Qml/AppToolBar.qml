@@ -12,6 +12,9 @@ ToolBar {
     signal startClicked
     signal stopClicked
 
+    enabled: searchManagerStatus != SearchManagerStatus.Starting
+             && searchManagerStatus != SearchManagerStatus.Stopping
+
     background: Rectangle {
         color: '#eeeeee'
 

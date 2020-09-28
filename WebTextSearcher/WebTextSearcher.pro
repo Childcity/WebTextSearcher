@@ -33,7 +33,7 @@ HEADERS += \
 
 SOURCES += \
     src/main.cpp \
-    #src/Utils/Utils.hpp \
+    src/Utils/Utils.hpp \
     src/Dal/searchmanager.cpp \
     src/Net/operationcancelederror.cpp \
     src/Utils/ThreadSafeQueue.hpp \

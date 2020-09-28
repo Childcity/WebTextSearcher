@@ -93,10 +93,15 @@ void SearchManager::slotStopSearcher()
                 DEBUG("Searcher thread will be terminated directly!");
                 searcher_->terminate();
                 searcher_->wait();
-                setStatus(SearchManagerStatus::Stopped);
+            } else {
+                // If normal Interruption -> we just return.
+                // Stopped will besited after  watcher will be stopped
+                return;
             }
         }
     }
+
+    setStatus(SearchManagerStatus::Stopped);
 }
 
 void SearchManager::setStartUrl(QString startUrl)
