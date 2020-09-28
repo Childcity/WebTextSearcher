@@ -20,7 +20,7 @@ class SearchManager : public QObject {
     Q_PROPERTY(QString startUrl READ startUrl WRITE setStartUrl)
     Q_PROPERTY(QString serchedText READ serchedText WRITE setSerchedText)
     Q_PROPERTY(int maxThreadsNum READ maxThreadsNum WRITE setMaxThreadsNum)
-    Q_PROPERTY(int maxUrlsNum READ maxUrlsNum WRITE setMaxUrlsNum)
+    Q_PROPERTY(int maxUrlsNum READ maxUrlsNum WRITE setMaxUrlsNum NOTIFY maxUrlsNumChanged)
     Q_PROPERTY(int urlDownloadingTimeout READ urlDownloadingTimeout WRITE seUrlDownloadingTimeout)
 
 public:
@@ -44,6 +44,8 @@ public:
 
 signals:
     void serchedUrlsModelChanged(QVariant serchedUrlsModel);
+
+    void maxUrlsNumChanged();
 
 public slots:
     void setSerchedUrlsModel(const QVariant &serchedUrlsModel);

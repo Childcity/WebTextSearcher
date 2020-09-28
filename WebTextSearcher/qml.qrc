@@ -3,5 +3,6 @@
         <file>src/Qml/MainWindow.qml</file>
         <file>src/Qml/AppToolBar.qml</file>
         <file>src/Qml/SearcherParamsForm.qml</file>
+        <file>src/Qml/SearcherResultList.qml</file>
     </qresource>
 </RCC>

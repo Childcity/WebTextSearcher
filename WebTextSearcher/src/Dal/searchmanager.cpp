@@ -15,7 +15,7 @@ SearchManager::~SearchManager()
 
 QVariant SearchManager::serchedUrlsModel() const
 {
-    return QVariant::fromValue(serchedUrlsModel_);
+    return QVariant::fromValue(serchedUrlsModel_.data());
 }
 
 QString SearchManager::startUrl() const
@@ -77,7 +77,7 @@ void SearchManager::slotStopSearcher()
     if (searcher_) {
         if (searcher_->isRunning()) {
             searcher_->requestInterruption();
-            if (! searcher_->wait(8000)) {
+            if (! searcher_->wait(10000)) {
                 DEBUG("Searcher thread will be terminated directly!");
                 searcher_->terminate();
                 searcher_->wait();
@@ -103,7 +103,11 @@ void SearchManager::setMaxThreadsNum(int maxThreadsNum)
 
 void SearchManager::setMaxUrlsNum(int maxUrlsNum)
 {
+    if (maxUrlsNum_ == maxUrlsNum)
+        return;
+
     maxUrlsNum_ = maxUrlsNum;
+    emit maxUrlsNumChanged();
 }
 
 void SearchManager::seUrlDownloadingTimeout(int urlDownloadingTimeout)

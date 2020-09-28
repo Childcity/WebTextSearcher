@@ -11,6 +11,10 @@ GridLayout {
     property alias maxThreadsNum: maxThreadsNumSb.value
     property alias maxUrlsNum: maxUrlsNumSb.value
     property alias urlDownloadingTimeout: maxUrlTimeoutSb.value
+    signal startClicked
+    signal stopClicked
+
+    readonly property int controlHeight: 30
 
     columnSpacing: defMargin
     rowSpacing: defMargin
@@ -30,9 +34,19 @@ GridLayout {
             border.color: startUrlTf.focus ? '#0066ff' : '#bdbdbd'
             border.width: startUrlTf.focus ? 2 : 1
         }
+        Layout.row: 1
+        Layout.column: 2
+        Layout.columnSpan: 3
+        Layout.fillWidth: true
+        Layout.preferredHeight: controlHeight
+        text: 'https://en.cppreference.com/w/cpp/algorithm/search'
+        placeholderText: qsTr('https://en.cppreference.com/w/cpp/algorithm/search')
+        validator: RegExpValidator { regExp: /https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/ }
+
         SequentialAnimation {
-            id: startUrlTfAnim
+            id: startUrlNotPresentAnim
             loops: 2
+            onStarted: startUrlTf.focus = true
             PropertyAnimation {
                 target: startUrlTf.background.border
                 property: "color"
@@ -48,14 +62,6 @@ GridLayout {
 
             }
         }
-        Layout.row: 1
-        Layout.column: 2
-        Layout.columnSpan: 3
-        Layout.fillWidth: true
-        Layout.preferredHeight: controlHeight
-        text: 'https://en.cppreference.com/w/cpp/algorithm/search'
-        placeholderText: qsTr('https://en.cppreference.com/w/cpp/algorithm/search')
-        validator: RegExpValidator { regExp: /https*:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/ }
     }
 
     Label {
@@ -71,7 +77,7 @@ GridLayout {
         Layout.columnSpan: 3
         Layout.fillWidth: true
         Layout.preferredHeight: controlHeight
-        text: 'Example'
+        //text: 'Example'
         placeholderText: qsTr('qthread')
     }
 
@@ -90,6 +96,7 @@ GridLayout {
         value: 100
         from: 1
         to: 1000
+        stepSize: 50
     }
 
     Label {
@@ -104,9 +111,10 @@ GridLayout {
         Layout.row: 4
         Layout.column: 2
         editable: true
-        value: 20
+        value: 1000
         from: 1
-        to: 100000
+        to: 999999
+        stepSize: 1000
     }
 
     Row {
@@ -127,6 +135,13 @@ GridLayout {
             value: 3000
             from: 1
             to: 100000
+            stepSize: 500
+        }
+    }
+
+    onStartClicked: {
+        if(startUrlTf.text.length < 8 ){ // 8 because 'http://a'
+            startUrlNotPresentAnim.running = true
         }
     }
 }

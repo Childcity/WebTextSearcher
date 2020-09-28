@@ -34,6 +34,8 @@ void Models::SerchedUrlsModel::emplaceBack(Dal::TextSearcherStatus item)
     beginInsertRows(QModelIndex(), lastIndex, lastIndex);
     urls_.emplace_back(std::move(item));
     endInsertRows();
+
+    emit rowCountChanged();
 }
 
 void Models::SerchedUrlsModel::update(Dal::TextSearcherStatus item,  const QVector<int> &roles)

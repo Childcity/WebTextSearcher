@@ -14,6 +14,8 @@ namespace Models {
 class SerchedUrlsModel : public QAbstractListModel {
     Q_OBJECT
 
+    Q_PROPERTY(int rowCount READ rowCount NOTIFY rowCountChanged)
+
 public:
     enum ScanningUrlRoles
     {
@@ -42,6 +44,9 @@ public:
     void reserve(size_t maxUrlsNumber);
 
     void clear();
+
+signals:
+    void rowCountChanged();
 
 private:
     std::vector<Dal::TextSearcherStatus> urls_;

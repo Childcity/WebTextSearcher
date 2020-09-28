@@ -30,6 +30,7 @@ void ParallelSearcher::run()
     int scannedUrlsNumber = 0;
     QThreadPool workers;
     workers.setMaxThreadCount(static_cast<int>(maxThreadsNum_));
+    workers.setExpiryTimeout(1000);
 
     // Create thread safe queue of urls to be downloaded later
     auto queue = std::make_shared<Utils::SafeUrlQueue>();
