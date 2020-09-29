@@ -89,7 +89,7 @@ void SearchManager::slotStopSearcher()
     if (searcher_) {
         if (searcher_->isRunning()) {
             searcher_->requestInterruption();
-            if (! searcher_->wait(10000)) {
+            if (! searcher_->wait(20000)) {
                 DEBUG("Searcher thread will be terminated directly!");
                 searcher_->terminate();
                 searcher_->wait();
