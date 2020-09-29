@@ -101,7 +101,7 @@ Rectangle {
                             horizontalAlignment: Text.AlignLeft
 
                             text: qsTr('Status: '
-                                       + toTextSearcherStatusString(model.status)
+                                       + toStringTextSearcherStatus(model.status)
                                        + (model.status === SearchStatusType.Error ? ': ' + model.error : ''))
 
                             font {
@@ -161,7 +161,7 @@ Rectangle {
         }
     }
 
-    function toTextSearcherStatusString(status) {
+    function toStringTextSearcherStatus(status) {
         switch(status){
             case SearchStatusType.NotSet: return "NotSet"
             case SearchStatusType.Found: return "Found"

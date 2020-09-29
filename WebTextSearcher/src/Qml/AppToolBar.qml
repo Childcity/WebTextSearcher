@@ -12,8 +12,8 @@ ToolBar {
     signal startClicked
     signal stopClicked
 
-    enabled: searchManagerStatus != SearchManagerStatus.Starting
-             && searchManagerStatus != SearchManagerStatus.Stopping
+    enabled: searchManagerStatus !== SearchManagerStatus.Starting
+             && searchManagerStatus !== SearchManagerStatus.Stopping
 
     background: Rectangle {
         color: '#eeeeee'
@@ -44,12 +44,37 @@ ToolBar {
             Layout.fillWidth: true
         }
 
-        Custom.RoundBusyIndicator {
-            Layout.maximumHeight: 30
+        Item {
             Layout.alignment: Qt.AlignRight
-            scale: 0.5
-            visible: searchManagerStatus === SearchManagerStatus.Running
-                     || searchManagerStatus === SearchManagerStatus.Stopping
+            Layout.maximumHeight: 30
+            Layout.minimumWidth: 70
+
+            Label {
+                id: st
+                anchors.fill: parent
+                anchors.topMargin: 4
+                text: toStringSearchManagerStatus(searchManagerStatus)
+                font {
+                    italic: true
+                    pointSize: 8
+                }
+            }
+
+            Custom.RoundBusyIndicator {
+                anchors.fill: parent
+                anchors.bottomMargin: 10
+                scale: 0.3
+                visible: searchManagerStatus !== SearchManagerStatus.Stopped
+            }
+        }
+    }
+
+    function toStringSearchManagerStatus(status) {
+        switch(status){
+            case SearchManagerStatus.Starting: return "starting..."
+            case SearchManagerStatus.Running: return "runnning..."
+            case SearchManagerStatus.Stopping: return "stopping..."
+            case SearchManagerStatus.Stopped: return "stopped"
         }
     }
 }

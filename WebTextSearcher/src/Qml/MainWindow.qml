@@ -22,8 +22,8 @@ ApplicationWindow {
 
     header: AppToolBar {
         id: toolBar
-        leftPadding: defaultMargin
-        bottomPadding: defaultMargin
+        padding: defaultMargin
+        topPadding: 0
         onStartClicked: {
             searcherParamsForm.startClicked()
             if(searcherParamsForm.startUrl.length < 8 ){ // 8 because 'http://a'
