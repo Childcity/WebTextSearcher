@@ -40,7 +40,7 @@ ToolBar {
             onClicked: root.stopClicked()
         }
 
-        Item{
+        Item {
             Layout.fillWidth: true
         }
 
@@ -52,7 +52,7 @@ ToolBar {
             Label {
                 id: st
                 anchors.fill: parent
-                anchors.topMargin: 4
+                anchors.topMargin: 5
                 text: toStringSearchManagerStatus(searchManagerStatus)
                 font {
                     italic: true
@@ -62,7 +62,8 @@ ToolBar {
 
             Custom.RoundBusyIndicator {
                 anchors.fill: parent
-                anchors.bottomMargin: 10
+                anchors.bottomMargin: 20
+                anchors.rightMargin: 20
                 scale: 0.3
                 visible: searchManagerStatus !== SearchManagerStatus.Stopped
             }
