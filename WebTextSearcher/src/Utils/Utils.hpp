@@ -90,8 +90,12 @@ struct CustomMessageHandler {
                 if (! msg.contains("setCachingEnabled"))
                     (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
             } break;
+            case QtWarningMsg: {
+                if (! msg.contains("QNetworkReplyImpl", Qt::CaseInsensitive))
+                    (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
+            } break;
             case QtCriticalMsg: {
-                if (! msg.contains("QNetworkReplyImpl"))
+                if (! msg.contains("QNetworkReplyImpl", Qt::CaseInsensitive))
                     (*QT_DEFAULT_MESSAGE_HANDLER)(type, context, msg);
             } break;
             default:
